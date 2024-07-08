@@ -22,6 +22,8 @@ jobs:
           echo A comment on OPEN PR $NUMBER
         env:
           NUMBER: ${{ github.event.issue.number }}
+          # Token needed for gh CLI
+          GH_TOKEN: ${{ github.token }}
 
   issue_specific_comment:
     # This job only runs for specific issue comments
