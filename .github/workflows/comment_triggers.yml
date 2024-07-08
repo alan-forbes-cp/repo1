@@ -9,7 +9,7 @@ on:
 jobs:
   open_pr_commented:
     # This job only runs for open pull request comments
-    name: PR comment
+    name: Open PR comment
     if: ${{ github.event.issue.pull_request }}
     runs-on: ubuntu-latest
     steps:
