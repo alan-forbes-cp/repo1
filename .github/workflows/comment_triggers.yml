@@ -18,6 +18,17 @@ jobs:
         env:
           NUMBER: ${{ github.event.issue.number }}
 
+  issue_specific_comment:
+    # This job only runs for specific issue comments
+    name: Specific issue comment
+    if: ${{ !github.event.issue.pull_request && github.event.issue.body == '/build' }}
+    runs-on: ubuntu-latest
+    steps:
+      - run: |
+          echo A specific comment on issue $NUMBER
+        env:
+          NUMBER: ${{ github.event.issue.number }}
+
   issue_commented:
     # This job only runs for issue comments
     name: Issue comment
@@ -29,13 +40,3 @@ jobs:
         env:
           NUMBER: ${{ github.event.issue.number }}
 
-  issue_specific_comment:
-    # This job only runs for specific issue comments
-    name: Specific issue comment
-    if: ${{ !github.event.issue.pull_request && github.event.issue.body == '/build' }}
-    runs-on: ubuntu-latest
-    steps:
-      - run: |
-          echo A specific comment on issue $NUMBER
-        env:
-          NUMBER: ${{ github.event.issue.number }}
