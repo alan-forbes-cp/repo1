@@ -7,14 +7,19 @@ on:
       - deleted
   
 jobs:
-  pr_commented:
-    # This job only runs for pull request comments
+  open_pr_commented:
+    # This job only runs for open pull request comments
     name: PR comment
     if: ${{ github.event.issue.pull_request }}
     runs-on: ubuntu-latest
     steps:
       - run: |
-          echo A comment on PR $NUMBER
+          STATE=$(gh pr view $PR_NUMBER --repo ${{ github.repository }} --json state --jq .state)
+          if [ "$STATE" != "OPEN" ]; then
+            echo "Cannot build for closed PRs"
+            exit 1
+          fi
+          echo A comment on OPEN PR $NUMBER
         env:
           NUMBER: ${{ github.event.issue.number }}
 
