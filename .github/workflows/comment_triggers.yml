@@ -29,6 +29,17 @@ jobs:
         env:
           NUMBER: ${{ github.event.issue.number }}
 
+  issue_contains_comment:
+    # This job only runs for issue contains comments
+    name: Issue contains comment
+    if: ${{ !github.event.issue.pull_request && contains(github.event.comment.body, 'string' }}
+    runs-on: ubuntu-latest
+    steps:
+      - run: |
+          echo A contains comment on issue $NUMBER
+        env:
+          NUMBER: ${{ github.event.issue.number }}
+
   issue_commented:
     # This job only runs for issue comments
     name: Issue comment
