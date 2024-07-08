@@ -1,12 +1,11 @@
 name: comment triggers pipeline
 on:
   issue_comment:
-  # Note: This event will only trigger a workflow run if the workflow file is on the default branch.
-  types:
-    - created
-    - edited
-    - deleted
-
+    types:
+      - created
+      - edited
+      - deleted
+  
 jobs:
   pr_commented:
     # This job only runs for pull request comments
@@ -33,7 +32,6 @@ jobs:
   issue_specific_comment:
     # This job only runs for specific issue comments
     name: Specific issue comment
-    if: ${{ !github.event.issue.pull_request }}
     if: ${{ !github.event.issue.pull_request && github.event.issue.body == '/build' }}
     runs-on: ubuntu-latest
     steps:
