@@ -1,4 +1,4 @@
-name: comment triggers pipeline
+name: alan comment triggers pipeline
 on:
   issue_comment:
     types:
