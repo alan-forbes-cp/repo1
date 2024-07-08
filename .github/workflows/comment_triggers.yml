@@ -21,8 +21,7 @@ jobs:
   issue_specific_comment:
     # This job only runs for specific issue comments
     name: Specific issue comment
-    #if: ${{ !github.event.issue.pull_request && github.event.issue.body == '/build' }}
-    if: ${{ github.event.issue.body == '/build' }}
+    if: ${{ !github.event.issue.pull_request && github.event.comment.body == '/build' }}
     runs-on: ubuntu-latest
     steps:
       - run: |
