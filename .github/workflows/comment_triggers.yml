@@ -5,6 +5,9 @@ on:
       - created
       - edited
       - deleted
+# also state the following to limit to PR openings??
+#  pull_request:
+#      - opened
   
 jobs:
   open_pr_commented:
@@ -31,7 +34,6 @@ jobs:
         run: |
           echo "pr_ref=$(gh pr view $NUMBER --repo ${{ github.repository }} --json headRefOid | jq -r '.headRefOid')" >> $GITHUB_OUTPUT
           cat $GITHUB_OUTPUT
-          echo SHA is: ${{ github.event.pull_request.head.sha }}
         env:
           NUMBER: ${{ github.event.issue.number }}
           # Token needed for gh CLI
@@ -53,6 +55,9 @@ jobs:
         run: |
           echo A non-build comment on OPEN PR $NUMBER
           ls -l
+          echo actor: ${{ github.actor }}
+          echo trigger: ${{ github.triggering_actor }}
+          echo user: ${{ github.event.comment.user.login }}
         env:
           NUMBER: ${{ github.event.issue.number }}
 
