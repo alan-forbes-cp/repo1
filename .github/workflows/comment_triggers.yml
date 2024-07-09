@@ -14,7 +14,8 @@ jobs:
     if: ${{ github.event.issue.pull_request }}
     runs-on: ubuntu-latest
     steps:
-      - run: |
+      - name: check PR status
+        run: |
           STATE=$(gh pr view $NUMBER --repo ${{ github.repository }} --json state --jq .state)
           if [ "$STATE" != "OPEN" ]; then
             echo "Cannot build for closed PRs"
@@ -22,6 +23,15 @@ jobs:
           fi
           echo A comment on OPEN PR $NUMBER
           echo GITHUB_SHA: $GITHUB_SHA
+        env:
+          NUMBER: ${{ github.event.issue.number }}
+          # Token needed for gh CLI
+          GH_TOKEN: ${{ github.token }}
+      - name: get PR ref
+        id: getRef
+        run: |
+          echo "pr_ref=$(gh pr view $NUMBER --repo ${{ github.repository }} --json headRefOid | jq -r '.headRefOid')" >> $GITHUB_OUTPUT
+          cat $GITHUB_OUTPUT
         env:
           NUMBER: ${{ github.event.issue.number }}
           # Token needed for gh CLI
