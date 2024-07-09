@@ -9,6 +9,7 @@ on:
 jobs:
   open_pr_commented:
     # This job only runs for open pull request comments
+    # BUT ... is gh cli available on self hosted runners??
     name: Open PR comment
     if: ${{ github.event.issue.pull_request }}
     runs-on: ubuntu-latest
