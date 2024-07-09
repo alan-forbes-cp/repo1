@@ -14,7 +14,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - run: |
-          STATE=$(gh pr view $PR_NUMBER --repo ${{ github.repository }} --json state --jq .state)
+          STATE=$(gh pr view $NUMBER --repo ${{ github.repository }} --json state --jq .state)
           if [ "$STATE" != "OPEN" ]; then
             echo "Cannot build for closed PRs"
             exit 1
