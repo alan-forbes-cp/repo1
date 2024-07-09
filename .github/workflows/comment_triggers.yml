@@ -21,6 +21,7 @@ jobs:
             exit 1
           fi
           echo A comment on OPEN PR $NUMBER
+          echo GITHUB_SHA: $GITHUB_SHA
         env:
           NUMBER: ${{ github.event.issue.number }}
           # Token needed for gh CLI
