@@ -9,7 +9,7 @@ on:
 jobs:
   open_pr_commented:
     # This job only runs for open pull request comments
-    # BUT ... is gh cli available on self hosted runners??
+    # BUT ... is gh cli available on self hosted (i.e. all) runners??
     name: Open PR comment
     if: ${{ github.event.issue.pull_request }}
     runs-on: ubuntu-latest
@@ -40,9 +40,17 @@ jobs:
         with:
           fetch-depth: 0
           ref: ${{ steps.getRef.outputs.pr_ref }}
-      - name: do stuff
+      - name: do build stuff
+        if: ${{ github.event.comment.body == '/build' }}
         run: |
-          echo A comment on OPEN PR $NUMBER
+          echo A build comment on OPEN PR $NUMBER
+          ls -l
+        env:
+          NUMBER: ${{ github.event.issue.number }}
+      - name: do non-build stuff
+        if: ${{ !github.event.comment.body == '/build' }}
+        run: |
+          echo A non-build comment on OPEN PR $NUMBER
           ls -l
         env:
           NUMBER: ${{ github.event.issue.number }}
