@@ -21,7 +21,6 @@ jobs:
             echo "Cannot build for closed PRs"
             exit 1
           fi
-          echo A comment on OPEN PR $NUMBER
           echo GITHUB_SHA: $GITHUB_SHA
         env:
           NUMBER: ${{ github.event.issue.number }}
@@ -36,6 +35,17 @@ jobs:
           NUMBER: ${{ github.event.issue.number }}
           # Token needed for gh CLI
           GH_TOKEN: ${{ github.token }}
+      - name: checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: ${{ steps.getRef.outputs.pr_ref }}
+      - name: do stuff
+        run: |
+          echo A comment on OPEN PR $NUMBER
+          ls -l
+        env:
+          NUMBER: ${{ github.event.issue.number }}
 
   issue_specific_comment:
     # This job only runs for specific issue comments
