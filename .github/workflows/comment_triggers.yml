@@ -48,7 +48,7 @@ jobs:
         env:
           NUMBER: ${{ github.event.issue.number }}
       - name: do non-build stuff
-        if: ${{ !github.event.comment.body == '/build' }}
+        if: ${{ !(github.event.comment.body == '/build') }}
         run: |
           echo A non-build comment on OPEN PR $NUMBER
           ls -l
