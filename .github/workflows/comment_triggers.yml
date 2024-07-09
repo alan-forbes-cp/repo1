@@ -50,7 +50,7 @@ jobs:
   issue_commented:
     # This job only runs for issue comments that dont match strings
     name: Non-matching issue comment
-    if: ${{ !github.event.issue.pull_request && !github.event.comment.body == '/build' && !contains(github.event.comment.body, 'string') }}
+    if: ${{ !github.event.issue.pull_request && !(github.event.comment.body == '/build') && !(contains(github.event.comment.body, 'string')) }}
     runs-on: ubuntu-latest
     steps:
       - run: |
