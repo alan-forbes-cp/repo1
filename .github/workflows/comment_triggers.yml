@@ -52,7 +52,7 @@ jobs:
           ls -l
       - name: Update comment
         run: |
-          gh issue comment "$NUMBER" -- body "$BODY"
+          gh issue comment "$NUMBER" --body "$BODY"
         env:
           PR_NUMBER: ${{ github.event.issue.number }}
           GH_TOKEN: ${{ github.token }}
