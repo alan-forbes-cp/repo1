@@ -22,7 +22,7 @@ jobs:
     if: ${{ github.event.issue.pull_request && (github.event.comment.user.login == 'alan-forbes-cp') && (github.event.comment.body == '/build') }}
     runs-on: ubuntu-latest
     steps:
-      - name: check PR status and get associated repo ref
+      - name: Check PR status and get associated repo ref
         id: PR_REF
         run: |
           STATE=$(gh pr view $PR_NUMBER --repo $REPO --json state --jq .state)
@@ -30,19 +30,21 @@ jobs:
             echo "PR is not open - quitting ..."
             exit 1
           fi
+          echo "PR is open ..."
           echo "PR_REF=$(gh pr view $PR_NUMBER --repo $REPO --json headRefOid | jq -r '.headRefOid')" >> $GITHUB_OUTPUT
           cat $GITHUB_OUTPUT
         env:
           PR_NUMBER: ${{ github.event.issue.number }}
           GH_TOKEN: ${{ github.token }}
           REPO: ${{ github.repository }}
-      - name: example build - checkout PR ref
+      - name: Example build - checkout PR ref
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
           ref: ${{ steps.getRef.outputs.PR_REF }}
-      - name: example build - list content
+      - name: Example build - list latest commit and content
         run: |
+          git log -1
           ls -l
 
 #  issue_specific_comment:
