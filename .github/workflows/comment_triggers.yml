@@ -21,7 +21,7 @@ jobs:
     # * open PRs only
     # Requires:
     # * GH cli must be available on runner
-    name: PR comments
+    name: PR comment trigger tests
     if: ${{ github.event.issue.pull_request && (github.event.comment.user.login == 'alan-forbes-cp') && (github.event.comment.body == '/verify') }}
     runs-on: ubuntu-latest
     permissions:
