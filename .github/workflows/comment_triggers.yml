@@ -1,19 +1,23 @@
-name: comment triggers pipeline
+name: PR comment triggers
 on:
   issue_comment:
+    # this applies to both issues and PRs - limit to PRs only in jobs below
     types:
-      - created
-      - edited
-      - deleted
+      - created # new comments only - no edits or deletions
+      # - edited
+      # - deleted
 # also state the following to limit to PR openings??
 #  pull_request:
 #      - opened
   
 jobs:
-  open_pr_commented:
-    # This job only runs for open pull request comments
+  open_pr_comments:
+    # Job runs for:
+    # * new PR comments (not Issues - see 'issue_comment:' above)
+    # * open PRs only
+    # * from specific user
     # BUT ... is gh cli available on self hosted (i.e. all) runners??
-    name: Open PR comment
+    name: Open PR comments
     if: ${{ github.event.issue.pull_request && (github.event.comment.user.login == 'alan-forbes-cp') }}
     runs-on: ubuntu-latest
     steps:
@@ -58,36 +62,36 @@ jobs:
         env:
           NUMBER: ${{ github.event.issue.number }}
 
-  issue_specific_comment:
-    # This job only runs for specific issue comments
-    name: Specific issue comment
-    if: ${{ !github.event.issue.pull_request && github.event.comment.body == '/build' }}
-    runs-on: ubuntu-latest
-    steps:
-      - run: |
-          echo A specific comment on issue $NUMBER
-        env:
-          NUMBER: ${{ github.event.issue.number }}
-
-  issue_contains_comment:
-    # This job only runs for issue contains comments
-    name: Issue contains comment
-    if: ${{ !github.event.issue.pull_request && contains(github.event.comment.body, 'string') }}
-    runs-on: ubuntu-latest
-    steps:
-      - run: |
-          echo A contains comment on issue $NUMBER
-        env:
-          NUMBER: ${{ github.event.issue.number }}
-
-  issue_commented:
-    # This job only runs for issue comments that dont match strings
-    name: Non-matching issue comment
-    if: ${{ !github.event.issue.pull_request && !(github.event.comment.body == '/build') && !(contains(github.event.comment.body, 'string')) }}
-    runs-on: ubuntu-latest
-    steps:
-      - run: |
-          echo A non-match comment on issue $NUMBER
-        env:
-          NUMBER: ${{ github.event.issue.number }}
+#  issue_specific_comment:
+#    # This job only runs for specific issue comments
+#    name: Specific issue comment
+#    if: ${{ !github.event.issue.pull_request && github.event.comment.body == '/build' }}
+#    runs-on: ubuntu-latest
+#    steps:
+#      - run: |
+#          echo A specific comment on issue $NUMBER
+#        env:
+#          NUMBER: ${{ github.event.issue.number }}
+#
+#  issue_contains_comment:
+#    # This job only runs for issue contains comments
+#    name: Issue contains comment
+#    if: ${{ !github.event.issue.pull_request && contains(github.event.comment.body, 'string') }}
+#    runs-on: ubuntu-latest
+#    steps:
+#      - run: |
+#          echo A contains comment on issue $NUMBER
+#        env:
+#          NUMBER: ${{ github.event.issue.number }}
+#
+#  issue_commented:
+#    # This job only runs for issue comments that dont match strings
+#    name: Non-matching issue comment
+#    if: ${{ !github.event.issue.pull_request && !(github.event.comment.body == '/build') && !(contains(github.event.comment.body, 'string')) }}
+#    runs-on: ubuntu-latest
+#    steps:
+#      - run: |
+#          echo A non-match comment on issue $NUMBER
+#        env:
+#          NUMBER: ${{ github.event.issue.number }}
 
