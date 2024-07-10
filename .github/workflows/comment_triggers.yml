@@ -11,37 +11,41 @@ on:
 #      - opened
   
 jobs:
-  open_pr_comments:
+  pr_comments:
     # Job runs for:
-    # * new PR comments only (Issue comments are skipped - see 'issue_comment:' above)
+    # * PR comments only (Issue comments are skipped - see 'issue_comment:' above)
     # * open PRs only
-    # * comments from a specific user
-    # * specifc comments
+    # * new comments only
+    # * comments from a specific user only
+    # * specifc comments only
     # BUT ... is gh cli available on self hosted (i.e. all) runners??
-    name: Open PR comments
+    name: PR comments
     if: ${{ github.event.issue.pull_request && (github.event.comment.user.login == 'alan-forbes-cp') }}
     runs-on: ubuntu-latest
     steps:
-      - name: check PR status
+      - name: check PR status and get ref
+        id: PR_REF
         run: |
           STATE=$(gh pr view $PR_NUMBER --repo $REPO --json state --jq .state)
           if [ "$STATE" != "OPEN" ]; then
-            echo "Cannot build for closed PRs"
+            echo "Closed PR found - quitting ..."
             exit 1
           fi
+          echo "pr_ref=$(gh pr view $PR_NUMBER --repo $REPO --json headRefOid | jq -r '.headRefOid')" >> $GITHUB_OUTPUT
+          cat $GITHUB_OUTPUT
         env:
           PR_NUMBER: ${{ github.event.issue.number }}
           GH_TOKEN: ${{ github.token }} # needed for gh CLI
           REPO: ${{ github.repository }}
-      - name: get PR ref
-        id: getRef
-        run: |
-          echo "pr_ref=$(gh pr view $PR_NUMBER --repo ${{ github.repository }} --json headRefOid | jq -r '.headRefOid')" >> $GITHUB_OUTPUT
-          cat $GITHUB_OUTPUT
-        env:
-          PR_NUMBER: ${{ github.event.issue.number }}
-          # Token needed for gh CLI
-          GH_TOKEN: ${{ github.token }}
+#     - name: get PR ref
+#       id: getRef
+#       run: |
+#         echo "pr_ref=$(gh pr view $PR_NUMBER --repo ${{ github.repository }} --json headRefOid | jq -r '.headRefOid')" >> $GITHUB_OUTPUT
+#         cat $GITHUB_OUTPUT
+#       env:
+#         PR_NUMBER: ${{ github.event.issue.number }}
+#         # Token needed for gh CLI
+#         GH_TOKEN: ${{ github.token }}
       - name: checkout code
         uses: actions/checkout@v4
         with:
