@@ -1,4 +1,5 @@
-name: PR comment triggers
+name: PR comment trigger
+
 on:
   issue_comment:
     # applies to both issues and PRs - limit to PRs only in jobs below
@@ -6,51 +7,40 @@ on:
       - created # new comments only - no edits or deletions
       # - edited
       # - deleted
-# also state the following to limit to PR openings??
-#  pull_request:
-#      - opened
   
 jobs:
   pr_comments:
     # Job runs for:
-    # * PR comments only (Issue comments are skipped - see 'issue_comment:' above)
-    # * open PRs only
     # * new comments only
+    # * PR comments only (Issue comments are skipped - see 'issue_comment:' above)
     # * comments from a specific user only
     # * specifc comments only
-    # BUT ... is gh cli available on self hosted (i.e. all) runners??
+    # * open PRs only
+    # Requires:
+    # * GH cli must be available on runner
     name: PR comments
     if: ${{ github.event.issue.pull_request && (github.event.comment.user.login == 'alan-forbes-cp') }}
     runs-on: ubuntu-latest
     steps:
-      - name: check PR status and get ref
+      - name: check PR status and get associated repo ref
         id: PR_REF
         run: |
           STATE=$(gh pr view $PR_NUMBER --repo $REPO --json state --jq .state)
           if [ "$STATE" != "OPEN" ]; then
-            echo "Closed PR found - quitting ..."
+            echo "PR not open - quitting ..."
             exit 1
           fi
-          echo "pr_ref=$(gh pr view $PR_NUMBER --repo $REPO --json headRefOid | jq -r '.headRefOid')" >> $GITHUB_OUTPUT
+          echo "PR_REF=$(gh pr view $PR_NUMBER --repo $REPO --json headRefOid | jq -r '.headRefOid')" >> $GITHUB_OUTPUT
           cat $GITHUB_OUTPUT
         env:
           PR_NUMBER: ${{ github.event.issue.number }}
-          GH_TOKEN: ${{ github.token }} # needed for gh CLI
+          GH_TOKEN: ${{ github.token }}
           REPO: ${{ github.repository }}
-#     - name: get PR ref
-#       id: getRef
-#       run: |
-#         echo "pr_ref=$(gh pr view $PR_NUMBER --repo ${{ github.repository }} --json headRefOid | jq -r '.headRefOid')" >> $GITHUB_OUTPUT
-#         cat $GITHUB_OUTPUT
-#       env:
-#         PR_NUMBER: ${{ github.event.issue.number }}
-#         # Token needed for gh CLI
-#         GH_TOKEN: ${{ github.token }}
       - name: checkout code
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-          ref: ${{ steps.getRef.outputs.pr_ref }}
+          ref: ${{ steps.getRef.outputs.PR_REF }}
       - name: do build stuff
         if: ${{ github.event.comment.body == '/build' }}
         run: |
