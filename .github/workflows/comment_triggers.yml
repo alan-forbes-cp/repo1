@@ -23,6 +23,8 @@ jobs:
     name: PR comments
     if: ${{ github.event.issue.pull_request && (github.event.comment.user.login == 'alan-forbes-cp') && (github.event.comment.body == '/verify') }}
     runs-on: ubuntu-latest
+    permissions:
+      issues: write
     steps:
       - name: Check PR status and get associated repo ref
         id: PR_REF
@@ -49,8 +51,6 @@ jobs:
           git log -1
           ls -l
       - name: Update comment
-        permissions:
-          issues: write
         run: |
           gh issue comment "$NUMBER" -- body "$BODY"
         env:
