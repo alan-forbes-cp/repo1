@@ -36,25 +36,15 @@ jobs:
           PR_NUMBER: ${{ github.event.issue.number }}
           GH_TOKEN: ${{ github.token }}
           REPO: ${{ github.repository }}
-      - name: checkout code
+      - name: example build - checkout PR ref and list
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
           ref: ${{ steps.getRef.outputs.PR_REF }}
-      - name: do build stuff
-#       if: ${{ github.event.comment.body == '/build' }}
         run: |
-          echo A build comment on OPEN PR $PR_NUMBER
           ls -l
         env:
           PR_NUMBER: ${{ github.event.issue.number }}
-#     - name: do non-build stuff
-#       if: ${{ !(github.event.comment.body == '/build') }}
-#       run: |
-#         echo A non-build comment on OPEN PR $PR_NUMBER
-#         ls -l
-#       env:
-#         PR_NUMBER: ${{ github.event.issue.number }}
 
 #  issue_specific_comment:
 #    # This job only runs for specific issue comments
