@@ -14,29 +14,31 @@ jobs:
     # * new comments only
     # * PR comments only (Issue comments are skipped - see 'issue_comment:' above)
     # * comments from a specific user only
-    # * specifc comments only
+    # * specific comment-body content only ("/verify")
+    #   - note: it is also possible to trigger on comment-body substrings with:
+    #           contains(github.event.comment.body, 'substring')
     # * open PRs only
     # Requires:
     # * GH cli must be available on runner
     name: PR comments
-    if: ${{ github.event.issue.pull_request && (github.event.comment.user.login == 'alan-forbes-cp') && (github.event.comment.body == '/build') }}
+    if: ${{ github.event.issue.pull_request && (github.event.comment.user.login == 'alan-forbes-cp') && (github.event.comment.body == '/verify') }}
     runs-on: ubuntu-latest
     steps:
       - name: Check PR status and get associated repo ref
         id: PR_REF
         run: |
-          STATE=$(gh pr view $PR_NUMBER --repo $REPO --json state --jq .state)
+          STATE=$(gh pr view $PR_NUMBER --repo $GH_REPO --json state --jq .state)
           if [ "$STATE" != "OPEN" ]; then
             echo "PR is not open - quitting ..."
             exit 1
           fi
           echo "PR is open ..."
-          echo "pr_ref=$(gh pr view $PR_NUMBER --repo $REPO --json headRefOid | jq -r '.headRefOid')" >> $GITHUB_OUTPUT
+          echo "pr_ref=$(gh pr view $PR_NUMBER --repo $GH_REPO --json headRefOid | jq -r '.headRefOid')" >> $GITHUB_OUTPUT
           cat $GITHUB_OUTPUT
         env:
           PR_NUMBER: ${{ github.event.issue.number }}
           GH_TOKEN: ${{ github.token }}
-          REPO: ${{ github.repository }}
+          GH_REPO: ${{ github.repository }}
       - name: Example build - checkout PR ref
         uses: actions/checkout@v4
         with:
@@ -46,37 +48,15 @@ jobs:
         run: |
           git log -1
           ls -l
-
-#  issue_specific_comment:
-#    # This job only runs for specific issue comments
-#    name: Specific issue comment
-#    if: ${{ !github.event.issue.pull_request && github.event.comment.body == '/build' }}
-#    runs-on: ubuntu-latest
-#    steps:
-#      - run: |
-#          echo A specific comment on issue $PR_NUMBER
-#        env:
-#          PR_NUMBER: ${{ github.event.issue.number }}
-#
-#  issue_contains_comment:
-#    # This job only runs for issue contains comments
-#    name: Issue contains comment
-#    if: ${{ !github.event.issue.pull_request && contains(github.event.comment.body, 'string') }}
-#    runs-on: ubuntu-latest
-#    steps:
-#      - run: |
-#          echo A contains comment on issue $PR_NUMBER
-#        env:
-#          PR_NUMBER: ${{ github.event.issue.number }}
-#
-#  issue_commented:
-#    # This job only runs for issue comments that dont match strings
-#    name: Non-matching issue comment
-#    if: ${{ !github.event.issue.pull_request && !(github.event.comment.body == '/build') && !(contains(github.event.comment.body, 'string')) }}
-#    runs-on: ubuntu-latest
-#    steps:
-#      - run: |
-#          echo A non-match comment on issue $PR_NUMBER
-#        env:
-#          PR_NUMBER: ${{ github.event.issue.number }}
-
+      - name: Update comment
+        permissions:
+          issues: write
+        run: |
+          gh issue comment "$NUMBER" -- body "$BODY"
+        env:
+          PR_NUMBER: ${{ github.event.issue.number }}
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          BODY: >
+            /verify
+            ${{ steps.PR_REF.outputs.pr_ref }}
