@@ -44,7 +44,7 @@ jobs:
           GH_REPO: ${{ github.repository }}
       - name: Update comment with ref
         run: |
-          gh issue comment "$PR_NUMBER" --edit-last --body "$BODY"
+          gh issue comment "$PR_NUMBER" --body "$BODY"
         env:
           PR_NUMBER: ${{ github.event.issue.number }}
           GH_TOKEN: ${{ github.token }}
