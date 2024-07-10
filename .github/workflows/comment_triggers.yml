@@ -31,7 +31,7 @@ jobs:
             exit 1
           fi
           echo "PR is open ..."
-          echo "PR_REF=$(gh pr view $PR_NUMBER --repo $REPO --json headRefOid | jq -r '.headRefOid')" >> $GITHUB_OUTPUT
+          echo "pr_ref=$(gh pr view $PR_NUMBER --repo $REPO --json headRefOid | jq -r '.headRefOid')" >> $GITHUB_OUTPUT
           cat $GITHUB_OUTPUT
         env:
           PR_NUMBER: ${{ github.event.issue.number }}
@@ -41,7 +41,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-          ref: ${{ steps.getRef.outputs.PR_REF }}
+          ref: ${{ steps.PR_REF.outputs.pr_ref }}
       - name: Example build - list latest commit and content
         run: |
           git log -1
