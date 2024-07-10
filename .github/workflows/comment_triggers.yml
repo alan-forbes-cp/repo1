@@ -1,5 +1,5 @@
 name: PR comment trigger
-# Add omment
+# Add comment
 
 on:
   issue_comment:
