@@ -13,12 +13,12 @@ on:
 jobs:
   open_pr_comments:
     # Job runs for:
-    # * new PR comments (not Issues - see 'issue_comment:' above)
+    # * new PR comments only (Issue comments are skipped - see 'issue_comment:' above)
     # * open PRs only
-    # * from specific user
+    # * comments from a specific user
     # BUT ... is gh cli available on self hosted (i.e. all) runners??
     name: Open PR comments
-    if: ${{ github.event.issue.pull_request && (github.event.comment.user.login == 'alan-forbes-cp') }}
+    if: ${{ github.event.issue.pull_request && (github.event.comment.user.login == 'Xalan-forbes-cp') }}
     runs-on: ubuntu-latest
     steps:
       - name: check PR status
