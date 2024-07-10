@@ -25,6 +25,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       issues: write
+      pull-requests: write
     steps:
       - name: Check PR status and get associated repo ref
         id: PR_REF
