@@ -51,7 +51,7 @@ jobs:
           GH_TOKEN: ${{ github.token }}
           GH_REPO: ${{ github.repository }}
           BODY: >
-            /verify ${{ steps.PR_REF.outputs.pr_ref }}
+            /verify ${{ steps.PR_REF.outputs.pr_ref }} XXX
       - name: Example build 1 - checkout PR ref
         uses: actions/checkout@v4
         with:
