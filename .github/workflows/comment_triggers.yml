@@ -24,7 +24,6 @@ jobs:
     if: ${{ github.event.issue.pull_request && (github.event.comment.user.login == 'alan-forbes-cp') && (github.event.comment.body == '/verify') }}
     runs-on: ubuntu-latest
     permissions:
-      issues: write
       pull-requests: write
     steps:
       - name: Check PR status and get associated repo ref
@@ -42,18 +41,10 @@ jobs:
           PR_NUMBER: ${{ github.event.issue.number }}
           GH_TOKEN: ${{ github.token }}
           GH_REPO: ${{ github.repository }}
-      - name: Example build - checkout PR ref
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-          ref: ${{ steps.PR_REF.outputs.pr_ref }}
-      - name: Example build - list latest commit and content
+      - name: Update comment with ref
         run: |
-          git log -1
-          ls -l
-      - name: Update comment
-        run: |
-          gh issue comment "$PR_NUMBER" --body "$BODY"
+          echo gh issue comment "$PR_NUMBER" --body "$BODY"
+          echo ID: ${{ github.event.comment.id }}
         env:
           PR_NUMBER: ${{ github.event.issue.number }}
           GH_TOKEN: ${{ github.token }}
@@ -61,3 +52,12 @@ jobs:
           BODY: >
             /verify
             ${{ steps.PR_REF.outputs.pr_ref }}
+      - name: Example build 1 - checkout PR ref
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: ${{ steps.PR_REF.outputs.pr_ref }}
+      - name: Example build 2 - list latest commit and repo content
+        run: |
+          git log -1
+          ls -l
