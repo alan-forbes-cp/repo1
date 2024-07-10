@@ -19,7 +19,7 @@ jobs:
     # Requires:
     # * GH cli must be available on runner
     name: PR comments
-    if: ${{ github.event.issue.pull_request && (github.event.comment.user.login == 'alan-forbes-cp') }}
+    if: ${{ github.event.issue.pull_request && (github.event.comment.user.login == 'alan-forbes-cp') && (github.event.comment.body == '/build') }}
     runs-on: ubuntu-latest
     steps:
       - name: check PR status and get associated repo ref
@@ -27,7 +27,7 @@ jobs:
         run: |
           STATE=$(gh pr view $PR_NUMBER --repo $REPO --json state --jq .state)
           if [ "$STATE" != "OPEN" ]; then
-            echo "PR not open - quitting ..."
+            echo "PR is not open - quitting ..."
             exit 1
           fi
           echo "PR_REF=$(gh pr view $PR_NUMBER --repo $REPO --json headRefOid | jq -r '.headRefOid')" >> $GITHUB_OUTPUT
@@ -42,19 +42,19 @@ jobs:
           fetch-depth: 0
           ref: ${{ steps.getRef.outputs.PR_REF }}
       - name: do build stuff
-        if: ${{ github.event.comment.body == '/build' }}
+#       if: ${{ github.event.comment.body == '/build' }}
         run: |
           echo A build comment on OPEN PR $PR_NUMBER
           ls -l
         env:
           PR_NUMBER: ${{ github.event.issue.number }}
-      - name: do non-build stuff
-        if: ${{ !(github.event.comment.body == '/build') }}
-        run: |
-          echo A non-build comment on OPEN PR $PR_NUMBER
-          ls -l
-        env:
-          PR_NUMBER: ${{ github.event.issue.number }}
+#     - name: do non-build stuff
+#       if: ${{ !(github.event.comment.body == '/build') }}
+#       run: |
+#         echo A non-build comment on OPEN PR $PR_NUMBER
+#         ls -l
+#       env:
+#         PR_NUMBER: ${{ github.event.issue.number }}
 
 #  issue_specific_comment:
 #    # This job only runs for specific issue comments
