@@ -36,15 +36,14 @@ jobs:
           PR_NUMBER: ${{ github.event.issue.number }}
           GH_TOKEN: ${{ github.token }}
           REPO: ${{ github.repository }}
-      - name: example build - checkout PR ref and list
+      - name: example build - checkout PR ref
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
           ref: ${{ steps.getRef.outputs.PR_REF }}
+      - name: example build - list content
         run: |
           ls -l
-        env:
-          PR_NUMBER: ${{ github.event.issue.number }}
 
 #  issue_specific_comment:
 #    # This job only runs for specific issue comments
