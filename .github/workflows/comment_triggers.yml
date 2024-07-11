@@ -22,9 +22,10 @@ jobs:
           echo user: ${{ github.event.comment.user.login }}
           echo body: ${{ github.event.comment.body }}
           echo list: ${{ env.TEST_LIST }}
-          #echo "test_list=${{ env.TEST_LIST }}" >> $GITHUB_OUTPUT
-          echo "test_list=TRUE" >> $GITHUB_OUTPUT
+          echo "test_list=TRUE" > $GITHUB_OUTPUT
           cat $GITHUB_OUTPUT
+
+#echo "test_list=${{ env.TEST_LIST }}" > $GITHUB_OUTPUT
 
   pr_internal_test_comment_trigger:
     # Job runs for:
@@ -53,7 +54,7 @@ jobs:
             exit 1
           fi
           echo "PR is open ..."
-          echo "pr_ref=$(gh pr view $PR_NUMBER --repo $GH_REPO --json headRefOid | jq -r '.headRefOid')" >> $GITHUB_OUTPUT
+          echo "pr_ref=$(gh pr view $PR_NUMBER --repo $GH_REPO --json headRefOid | jq -r '.headRefOid')" > $GITHUB_OUTPUT
           cat $GITHUB_OUTPUT
         env:
           PR_NUMBER: ${{ github.event.issue.number }}
