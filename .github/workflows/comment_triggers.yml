@@ -50,6 +50,7 @@ jobs:
           GH_TOKEN: ${{ github.token }}
           GH_REPO: ${{ github.repository }}
           BODY: >
+            ${{ github.event.comment.body }}
             /verify
             ${{ steps.PR_REF.outputs.pr_ref }}
             ${{ github.event.comment.user.login }}
