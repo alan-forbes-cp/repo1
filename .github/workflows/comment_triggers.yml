@@ -10,7 +10,8 @@ on:
       # - deleted
   
 env:
-  TEST_LIST: ${{ secrets.INTERNAL_TEST_LIST }}
+  TEST_LIST: "/alan-forbes-cp/verify"
+#  TEST_LIST: ${{ secrets.INTERNAL_TEST_LIST }}
 
 jobs:
   pr_internal_test_commentator_check:
@@ -23,11 +24,9 @@ jobs:
         run: |
           echo user: ${{ github.event.comment.user.login }}
           echo body: ${{ github.event.comment.body }}
-          #echo list: ${{ env.TEST_LIST }}
+          echo list: ${{ env.TEST_LIST }}
           echo "checked=TRUE" >> $GITHUB_OUTPUT
           cat $GITHUB_OUTPUT
-
-#echo "test_list=${{ env.TEST_LIST }}" >> $GITHUB_OUTPUT
 
   pr_internal_test_comment_trigger:
     # Job runs for:
