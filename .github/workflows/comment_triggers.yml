@@ -38,7 +38,7 @@ jobs:
           echo "PR is open ..."
           echo "pr_ref=$(gh pr view $PR_NUMBER --repo $GH_REPO --json headRefOid | jq -r '.headRefOid')" >> $GITHUB_OUTPUT
           cat $GITHUB_OUTPUT
-          echo "TEST LIST: ${TEST_LIST}"
+          echo "TEST LIST: $TEST_LIST"
         env:
           TEST_LIST: ${{ secrets.INTERNAL_TEST_LIST }}
           PR_NUMBER: ${{ github.event.issue.number }}
