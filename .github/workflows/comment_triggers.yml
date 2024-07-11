@@ -1,13 +1,11 @@
-name: PR internal test comment trigger
+name: PR internal-test comment trigger
 
 on:
   issue_comment:
     # "Every pull request is an issue, but not every issue is a pull request."
-    # - limit to PRs only in jobs: below
+    # - limit to PRs only in 'jobs:' below
     types:
       - created # new comments only - no edits or deletions
-      # - edited
-      # - deleted
   
 env:
   TEST_LIST: ${{ secrets.INTERNAL_TEST_LIST }}
@@ -18,18 +16,15 @@ jobs:
     # * new comments (See 'issue_comment:types' above)
     # * PR comments (Issue comments are skipped - also see 'issue_comment:' above)
     # * comments from specific user(s)
-    # * specific trigger string (comment-body content e.g. "/verify")
+    # * specific trigger string (i.e. comment-body content e.g. "/verify")
     # * open PRs
     # Requires:
     # * Github's 'gh' cli must be available on runner
-    name: PR internal test trigger check
+    name: PR internal-test trigger check
     if: ${{ github.event.issue.pull_request }}
     runs-on: ubuntu-latest
-    outputs:
-      checked: ${{ steps.trigger_check.outputs.checked }}
     steps:
       - name: Check trigger
-        id: trigger_check
         run: |
           if [[ ! "${PR_LIST}" =~ "/${PR_USER}${PR_BODY}" ]] ; then
             echo "PR user trigger check failed - quitting ..."
@@ -40,8 +35,6 @@ jobs:
             echo "PR is not open - quitting ..."
             exit 1
           fi
-          echo "checked=YES" >> $GITHUB_OUTPUT
-          cat $GITHUB_OUTPUT
         env:
           PR_USER: ${{ github.event.comment.user.login }}
           PR_BODY: ${{ github.event.comment.body }}
@@ -51,15 +44,15 @@ jobs:
           GH_REPO: ${{ github.repository }}
 
   pr_internal_test_process_trigger:
-    # Creates new PR comment with internal test request data:
+    # Creates new PR comment with internal-test request data:
     # * trigger string
     # * PR repo ref
     # * commentator name
     # Requires:
     # * Github's 'gh' cli must be available on runner
-    name: PR internal test trigger processing
+    name: PR internal-test trigger processing
     needs: pr_internal_test_trigger_check
-    if: ${{ github.event.issue.pull_request && (needs.pr_internal_test_trigger_check.outputs.checked == 'YES') }}
+    if: ${{ github.event.issue.pull_request }}
     runs-on: ubuntu-latest
     permissions:
       pull-requests: write
@@ -73,7 +66,7 @@ jobs:
           PR_NUMBER: ${{ github.event.issue.number }}
           GH_TOKEN: ${{ github.token }}
           GH_REPO: ${{ github.repository }}
-      - name: Add comment with internal test request data
+      - name: Add comment with internal-test request data
         run: |
           gh issue comment "$PR_NUMBER" --body "$BODY"
         env:
