@@ -26,6 +26,8 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       pull-requests: write
+    env:
+      TEST_LIST: ${{ secrets.INTERNAL_TEST_LIST }}
     steps:
       - name: Check PR status and obtain associated repo ref
         id: PR_REF
@@ -40,7 +42,6 @@ jobs:
           cat $GITHUB_OUTPUT
           echo "TEST LIST: $TEST_LIST"
         env:
-          TEST_LIST: ${{ secrets.INTERNAL_TEST_LIST }}
           PR_NUMBER: ${{ github.event.issue.number }}
           GH_TOKEN: ${{ github.token }}
           GH_REPO: ${{ github.repository }}
