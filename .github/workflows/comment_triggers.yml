@@ -7,8 +7,8 @@ on:
     types:
       - created # new comments only - no edits or deletions
   
-env:
-  TEST_LIST: ${{ secrets.INTERNAL_TEST_LIST }}
+#env:
+#  TEST_LIST: ${{ secrets.INTERNAL_TEST_LIST }}
 
 jobs:
   pr_internal_test_trigger_check:
@@ -35,10 +35,12 @@ jobs:
             echo "PR is not open - quitting ..."
             exit 1
           fi
+          echo "Trigger OK"
         env:
           PR_USER: ${{ github.event.comment.user.login }}
           PR_BODY: ${{ github.event.comment.body }}
-          PR_LIST: ${{ env.TEST_LIST }}
+#         PR_LIST: ${{ env.TEST_LIST }}
+          PR_LIST: ${{ secrets.INTERNAL_TEST_LIST }}
           PR_NUMBER: ${{ github.event.issue.number }}
           GH_TOKEN: ${{ github.token }}
           GH_REPO: ${{ github.repository }}
