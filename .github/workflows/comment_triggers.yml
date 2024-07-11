@@ -22,7 +22,7 @@ jobs:
     # Requires:
     # * Github's 'gh' cli must be available on runner
     name: PR internal test comment trigger
-    if: ${{ github.event.issue.pull_request && (github.event.comment.user.login == 'alan-forbes-cp') && (github.event.comment.body == '/verify') && (contains(env.TEST_LIST, 'alan') }}
+    if: ${{ github.event.issue.pull_request && (github.event.comment.user.login == 'alan-forbes-cp') && (github.event.comment.body == '/verify') && (contains(secrets.INTERNAL_TEST_LIST, 'alan') }}
     runs-on: ubuntu-latest
     permissions:
       pull-requests: write
