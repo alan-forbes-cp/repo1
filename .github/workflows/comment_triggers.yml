@@ -15,6 +15,14 @@ env:
 
 jobs:
   pr_internal_test_trigger_check:
+    # Checks for:
+    # * new comments (See 'issue_comment:types' above)
+    # * PR comments (Issue comments are skipped - see 'issue_comment:' above)
+    # * comments from specific user(s)
+    # * specific trigger string (comment-body content e.g. "/verify")
+    # * open PRs
+    # Requires:
+    # * Github's 'gh' cli must be available on runner
     name: PR internal test trigger check
     if: ${{ github.event.issue.pull_request }}
     runs-on: ubuntu-latest
@@ -24,6 +32,11 @@ jobs:
       - name: trigger check
         id: trigger_check
         run: |
+          STATE=$(gh pr view $PR_NUMBER --repo $GH_REPO --json state --jq .state)
+          if [ "$STATE" != "OPEN" ]; then
+            echo "PR is not open - quitting ..."
+            exit 1
+          fi
           echo user: $PR_USER
           echo body: $PR_BODY
           echo list: $PR_LIST
@@ -37,16 +50,15 @@ jobs:
           PR_USER: ${{ github.event.comment.user.login }}
           PR_BODY: ${{ github.event.comment.body }}
           PR_LIST: ${{ env.TEST_LIST }}
+          PR_NUMBER: ${{ github.event.issue.number }}
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
 
   pr_internal_test_process_trigger:
-    # Job runs for:
-    # * new comments only
-    # * PR comments only (Issue comments are skipped - see 'issue_comment:' above)
-    # * comments from a specific user only
-    # * specific comment-body content only (e.g. "/verify")
-    #   - note: it is also possible to trigger on comment-body substrings with:
-    #           contains(github.event.comment.body, 'substring')
-    # * open PRs only
+    # Creates new PR comment with internal test request data:
+    # * trigger string
+    # * PR repo ref
+    # * commentator name
     # Requires:
     # * Github's 'gh' cli must be available on runner
     name: PR internal test process trigger
@@ -56,15 +68,9 @@ jobs:
     permissions:
       pull-requests: write
     steps:
-      - name: Check PR status and obtain associated repo ref
+      - name: Obtain PR repo ref
         id: PR_REF
         run: |
-          STATE=$(gh pr view $PR_NUMBER --repo $GH_REPO --json state --jq .state)
-          if [ "$STATE" != "OPEN" ]; then
-            echo "PR is not open - quitting ..."
-            exit 1
-          fi
-          echo "PR is open ..."
           echo "pr_ref=$(gh pr view $PR_NUMBER --repo $GH_REPO --json headRefOid | jq -r '.headRefOid')" >> $GITHUB_OUTPUT
           cat $GITHUB_OUTPUT
         env:
