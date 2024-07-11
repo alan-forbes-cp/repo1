@@ -10,7 +10,6 @@ on:
       # - deleted
   
 env:
-#  TEST_LIST: "/scottstraughan/verify /alan-forbes-cp/verify"
   TEST_LIST: ${{ secrets.INTERNAL_TEST_LIST }}
 
 jobs:
@@ -32,16 +31,13 @@ jobs:
       - name: Check trigger
         id: trigger_check
         run: |
+          if [[ ! "${PR_LIST}" =~ "/${PR_USER}${PR_BODY}" ]] ; then
+            echo "PR user trigger check failed - quitting ..."
+            exit 1
+          fi
           STATE=$(gh pr view $PR_NUMBER --repo $GH_REPO --json state --jq .state)
           if [ "$STATE" != "OPEN" ]; then
             echo "PR is not open - quitting ..."
-            exit 1
-          fi
-          echo user: $PR_USER
-          echo body: $PR_BODY
-          echo list: $PR_LIST
-          if [[ ! "${PR_LIST}" =~ "/${PR_USER}${PR_BODY}" ]] ; then
-            echo "PR trigger check failed - quitting ..."
             exit 1
           fi
           echo "checked=YES" >> $GITHUB_OUTPUT
