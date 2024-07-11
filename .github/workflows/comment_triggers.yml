@@ -14,20 +14,21 @@ env:
 #  TEST_LIST: ${{ secrets.INTERNAL_TEST_LIST }}
 
 jobs:
-  pr_internal_test_commentator_check:
-    name: PR internal test commentator check
+  pr_internal_test_trigger_check:
+    name: PR internal test trigger check
+    if: ${{ github.event.issue.pull_request }}
     runs-on: ubuntu-latest
     outputs:
-      checked: ${{ steps.commentator_check.outputs.checked }}
+      checked: ${{ steps.trigger_check.outputs.checked }}
     steps:
-      - name: commentator check
-        id: commentator_check
+      - name: trigger check
+        id: trigger_check
         run: |
           echo user: $PR_USER
           echo body: $PR_BODY
           echo list: $PR_LIST
           if [[ ! "${PR_LIST}" =~ "/${PR_USER}${PR_BODY}" ]] ; then
-            echo "PR commentator check failed - quitting ..."
+            echo "PR trigger check failed - quitting ..."
             exit 1
           fi
           echo "checked=YES" >> $GITHUB_OUTPUT
@@ -37,7 +38,7 @@ jobs:
           PR_BODY: ${{ github.event.comment.body }}
           PR_LIST: ${{ env.TEST_LIST }}
 
-  pr_internal_test_comment_trigger:
+  pr_internal_test_process_trigger:
     # Job runs for:
     # * new comments only
     # * PR comments only (Issue comments are skipped - see 'issue_comment:' above)
@@ -48,9 +49,9 @@ jobs:
     # * open PRs only
     # Requires:
     # * Github's 'gh' cli must be available on runner
-    name: PR internal test comment trigger
-    needs: pr_internal_test_commentator_check
-    if: ${{ github.event.issue.pull_request && (github.event.comment.user.login == 'alan-forbes-cp') && (github.event.comment.body == '/verify') && (needs.pr_internal_test_commentator_check.outputs.checked == 'YES') }}
+    name: PR internal test process trigger
+    needs: pr_internal_test_trigger_check
+    if: ${{ github.event.issue.pull_request && (needs.pr_internal_test_trigger_check.outputs.checked == 'YES') }}
     runs-on: ubuntu-latest
     permissions:
       pull-requests: write
