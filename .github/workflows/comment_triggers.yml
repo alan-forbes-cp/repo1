@@ -1,33 +1,33 @@
-name: PR comment trigger
+name: PR internal test comment trigger
 
 on:
   issue_comment:
     # "Every pull request is an issue, but not every issue is a pull request."
-    # - limit to PRs only in jobs below
+    # - limit to PRs only in jobs: below
     types:
       - created # new comments only - no edits or deletions
       # - edited
       # - deleted
   
 jobs:
-  pr_comments:
+  pr_internal_test_comment_trigger:
     # Job runs for:
     # * new comments only
     # * PR comments only (Issue comments are skipped - see 'issue_comment:' above)
     # * comments from a specific user only
-    # * specific comment-body content only ("/verify")
+    # * specific comment-body content only (e.g. "/verify")
     #   - note: it is also possible to trigger on comment-body substrings with:
     #           contains(github.event.comment.body, 'substring')
     # * open PRs only
     # Requires:
     # * GH cli must be available on runner
-    name: PR comment trigger tests
+    name: PR internal test comment trigger
     if: ${{ github.event.issue.pull_request && (github.event.comment.user.login == 'alan-forbes-cp') && (github.event.comment.body == '/verify') }}
     runs-on: ubuntu-latest
     permissions:
       pull-requests: write
     steps:
-      - name: Check PR status and get associated repo ref
+      - name: Check PR status and obtain associated repo ref
         id: PR_REF
         run: |
           STATE=$(gh pr view $PR_NUMBER --repo $GH_REPO --json state --jq .state)
@@ -42,15 +42,16 @@ jobs:
           PR_NUMBER: ${{ github.event.issue.number }}
           GH_TOKEN: ${{ github.token }}
           GH_REPO: ${{ github.repository }}
-      - name: Update comment with ref
+      - name: Add comment with internal request data
         run: |
           gh issue comment "$PR_NUMBER" --body "$BODY"
         env:
           PR_NUMBER: ${{ github.event.issue.number }}
           GH_TOKEN: ${{ github.token }}
-          GH_REPO: ${{ github.repository }}
           BODY: >
-            /verify ${{ steps.PR_REF.outputs.pr_ref }} ${{ github.event.comment.user.login }}
+            ${{ github.event.comment.body }}
+            ${{ steps.PR_REF.outputs.pr_ref }}
+            ${{ github.event.comment.user.login }}
       - name: Example build 1 - checkout PR ref
         uses: actions/checkout@v4
         with:
