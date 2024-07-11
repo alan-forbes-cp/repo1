@@ -9,6 +9,23 @@ on:
       # - edited
       # - deleted
   
+env:
+  TEST_LIST: ${{ secrets.INTERNAL_TEST_LIST }}
+
+jobs:
+  pr_internal_test_comment_trigger2:
+    name: PR internal test comment trigger2
+    runs-on: ubuntu-latest
+    steps:
+      - name: think of a name
+        run: |
+          echo user: ${{ github.event.comment.user.login }}
+          echo body: ${{ github.event.comment.body }}
+          echo list: ${{ env.TEST_LIST }}
+          #echo "test_list=${{ env.TEST_LIST }}" >> $GITHUB_OUTPUT
+          echo "test_list=TRUE" >> $GITHUB_OUTPUT
+          cat $GITHUB_OUTPUT
+
 jobs:
   pr_internal_test_comment_trigger:
     # Job runs for:
@@ -22,12 +39,11 @@ jobs:
     # Requires:
     # * Github's 'gh' cli must be available on runner
     name: PR internal test comment trigger
-    if: ${{ github.event.issue.pull_request && (github.event.comment.user.login == 'alan-forbes-cp') && (github.event.comment.body == '/verify') && (contains(secrets.INTERNAL_TEST_LIST, 'alan') }}
+    needs: pr_internal_test_comment_trigger2
+    if: ${{ github.event.issue.pull_request && (github.event.comment.user.login == 'alan-forbes-cp') && (github.event.comment.body == '/verify') && (needs.pr_internal_test_comment_trigger2.outputs.test_list == 'TRUE) }}
     runs-on: ubuntu-latest
     permissions:
       pull-requests: write
-    env:
-      TEST_LIST: ${{ secrets.INTERNAL_TEST_LIST }}
     steps:
       - name: Check PR status and obtain associated repo ref
         id: PR_REF
