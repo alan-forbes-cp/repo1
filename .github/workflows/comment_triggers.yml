@@ -26,7 +26,11 @@ jobs:
           echo user: $PR_USER
           echo body: $PR_BODY
           echo list: $PR_LIST
-          echo "checked=NO" >> $GITHUB_OUTPUT
+          if [[ ! "${PR_LIST}" =~ "/${PR_USER}${PR_BODY" ]] ; then
+            echo "PR commentator check failed - quitting ..."
+            exit 1
+          fi
+          echo "checked=YES" >> $GITHUB_OUTPUT
           cat $GITHUB_OUTPUT
         env:
           PR_USER: ${{ github.event.comment.user.login }}
