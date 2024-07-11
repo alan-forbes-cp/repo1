@@ -18,14 +18,15 @@ jobs:
     name: PR internal test commentator check
     runs-on: ubuntu-latest
     outputs:
-      checked: ${{ steps.commentator.outputs.checked }}
+      checked: ${{ steps.commentator_check.outputs.checked }}
     steps:
-      - id: commentator
+      - name: commentator check
+        id: commentator_check
         run: |
           echo user: $PR_USER
           echo body: $PR_BODY
           echo list: $PR_LIST
-          echo "checked=TRUE" >> $GITHUB_OUTPUT
+          echo "checked=OK" >> $GITHUB_OUTPUT
           cat $GITHUB_OUTPUT
         env:
           PR_USER: ${{ github.event.comment.user.login }}
@@ -45,7 +46,7 @@ jobs:
     # * Github's 'gh' cli must be available on runner
     name: PR internal test comment trigger
     needs: pr_internal_test_commentator_check
-    if: ${{ github.event.issue.pull_request && (github.event.comment.user.login == 'alan-forbes-cp') && (github.event.comment.body == '/verify') && (needs.pr_internal_test_commentator_check.outputs.checked == 'TRUE') }}
+    if: ${{ github.event.issue.pull_request && (github.event.comment.user.login == 'alan-forbes-cp') && (github.event.comment.body == '/verify') && (needs.pr_internal_test_commentator_check.outputs.checked == 'OK') }}
     runs-on: ubuntu-latest
     permissions:
       pull-requests: write
