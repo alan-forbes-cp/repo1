@@ -10,7 +10,7 @@ on:
       # - deleted
   
 env:
-  TEST_LIST: "/alan-forbes-cp/verify"
+  TEST_LIST: "/scottstraughan/verify /alan-forbes-cp/verify"
 #  TEST_LIST: ${{ secrets.INTERNAL_TEST_LIST }}
 
 jobs:
@@ -22,11 +22,15 @@ jobs:
     steps:
       - id: commentator
         run: |
-          echo user: ${{ github.event.comment.user.login }}
-          echo body: ${{ github.event.comment.body }}
-          echo list: ${{ env.TEST_LIST }}
+          echo user: $PR_USER
+          echo body: $PR_BODY
+          echo list: $PR_LIST
           echo "checked=TRUE" >> $GITHUB_OUTPUT
           cat $GITHUB_OUTPUT
+        env:
+          PR_USER: ${{ github.event.comment.user.login }}
+          PR_BODY: ${{ github.event.comment.body }}
+          PR_LIST: ${{ env.TEST_LIST }}
 
   pr_internal_test_comment_trigger:
     # Job runs for:
