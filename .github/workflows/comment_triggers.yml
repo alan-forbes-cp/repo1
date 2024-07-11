@@ -13,19 +13,21 @@ env:
   TEST_LIST: ${{ secrets.INTERNAL_TEST_LIST }}
 
 jobs:
-  pr_internal_test_comment_trigger2:
-    name: PR internal test comment trigger2
+  pr_internal_test_commentator_check:
+    name: PR internal test commentator check
     runs-on: ubuntu-latest
+    outputs:
+      checked: ${{ steps.commentator.outputs.checked }}
     steps:
-      - name: think of a name
+      - id: commentator
         run: |
           echo user: ${{ github.event.comment.user.login }}
           echo body: ${{ github.event.comment.body }}
           echo list: ${{ env.TEST_LIST }}
-          echo "test_list=TRUE" > $GITHUB_OUTPUT
+          echo "checked=TRUE" >> $GITHUB_OUTPUT
           cat $GITHUB_OUTPUT
 
-#echo "test_list=${{ env.TEST_LIST }}" > $GITHUB_OUTPUT
+#echo "test_list=${{ env.TEST_LIST }}" >> $GITHUB_OUTPUT
 
   pr_internal_test_comment_trigger:
     # Job runs for:
@@ -39,8 +41,8 @@ jobs:
     # Requires:
     # * Github's 'gh' cli must be available on runner
     name: PR internal test comment trigger
-    needs: pr_internal_test_comment_trigger2
-    if: ${{ github.event.issue.pull_request && (github.event.comment.user.login == 'alan-forbes-cp') && (github.event.comment.body == '/verify') && (needs.pr_internal_test_comment_trigger2.outputs.test_list == 'TRUE') }}
+    needs: pr_internal_test_commentator_check
+    if: ${{ github.event.issue.pull_request && (github.event.comment.user.login == 'alan-forbes-cp') && (github.event.comment.body == '/verify') && (needs.pr_internal_test_commentator_check.outputs.checked == 'TRUE') }}
     runs-on: ubuntu-latest
     permissions:
       pull-requests: write
@@ -54,7 +56,7 @@ jobs:
             exit 1
           fi
           echo "PR is open ..."
-          echo "pr_ref=$(gh pr view $PR_NUMBER --repo $GH_REPO --json headRefOid | jq -r '.headRefOid')" > $GITHUB_OUTPUT
+          echo "pr_ref=$(gh pr view $PR_NUMBER --repo $GH_REPO --json headRefOid | jq -r '.headRefOid')" >> $GITHUB_OUTPUT
           cat $GITHUB_OUTPUT
         env:
           PR_NUMBER: ${{ github.event.issue.number }}
