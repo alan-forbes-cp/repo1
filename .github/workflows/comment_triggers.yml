@@ -23,7 +23,7 @@ jobs:
         run: |
           echo user: ${{ github.event.comment.user.login }}
           echo body: ${{ github.event.comment.body }}
-          echo list: ${{ env.TEST_LIST }}
+          #echo list: ${{ env.TEST_LIST }}
           echo "checked=TRUE" >> $GITHUB_OUTPUT
           cat $GITHUB_OUTPUT
 
