@@ -22,8 +22,6 @@ jobs:
     # Requires:
     # * Github's 'gh' cli must be available on runner
     name: PR internal test comment trigger
-    env:
-      TEST_LIST: ${{ secrets.INTERNAL_TEST_LIST }}
     if: ${{ github.event.issue.pull_request && (github.event.comment.user.login == 'alan-forbes-cp') && (github.event.comment.body == '/verify') }}
     runs-on: ubuntu-latest
     permissions:
@@ -42,6 +40,7 @@ jobs:
           cat $GITHUB_OUTPUT
           echo "TEST LIST: ${TEST_LIST}"
         env:
+          TEST_LIST: ${{ secrets.INTERNAL_TEST_LIST }}
           PR_NUMBER: ${{ github.event.issue.number }}
           GH_TOKEN: ${{ github.token }}
           GH_REPO: ${{ github.repository }}
