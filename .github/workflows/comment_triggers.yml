@@ -26,7 +26,6 @@ jobs:
           echo "test_list=TRUE" >> $GITHUB_OUTPUT
           cat $GITHUB_OUTPUT
 
-jobs:
   pr_internal_test_comment_trigger:
     # Job runs for:
     # * new comments only
