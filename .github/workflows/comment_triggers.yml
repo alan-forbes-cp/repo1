@@ -22,7 +22,7 @@ jobs:
     # Requires:
     # * Github's 'gh' cli must be available on runner
     name: PR internal test comment trigger
-    if: ${{ github.event.issue.pull_request && (github.event.comment.user.login == 'alan-forbes-cp') && (github.event.comment.body == '/verify') }}
+    if: ${{ github.event.issue.pull_request && (github.event.comment.user.login == 'alan-forbes-cp') && (github.event.comment.body == '/verify') && (contains(env.TEST_LIST, 'alan') }}
     runs-on: ubuntu-latest
     permissions:
       pull-requests: write
@@ -40,7 +40,6 @@ jobs:
           echo "PR is open ..."
           echo "pr_ref=$(gh pr view $PR_NUMBER --repo $GH_REPO --json headRefOid | jq -r '.headRefOid')" >> $GITHUB_OUTPUT
           cat $GITHUB_OUTPUT
-          echo "TEST LIST: $TEST_LIST"
         env:
           PR_NUMBER: ${{ github.event.issue.number }}
           GH_TOKEN: ${{ github.token }}
