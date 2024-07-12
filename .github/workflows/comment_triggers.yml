@@ -55,7 +55,7 @@ jobs:
     # * Github's 'gh' cli must be available on runner
     name: PR i-t-r processing
     needs: pr_internal_test_request_trigger_check
-    if: ${{ github.event.issue.pull_request && ( needs.pr_internal_test_request_trigger_check.outputs.run_processing == 'YES' }}
+    if: ${{ github.event.issue.pull_request && ( needs.pr_internal_test_request_trigger_check.outputs.run_processing == 'YES' ) }}
     runs-on: ubuntu-latest
     permissions:
       pull-requests: write
