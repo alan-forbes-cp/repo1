@@ -1,7 +1,7 @@
 # Rationale for 'internal testing access via comment triggers' workflow:
 
 'Org contact user' supplies a list of login names and a unique org 'trigger string' (as per login names, this should contain alphanumeric characters and dashes)
-- usage for trigger strings in comments is then: **/<trigger-string>**
+- usage for trigger strings in comments is then: **/trigger-string**
 
 Supplied user & trigger information is added to an action repository secret (currently **INTERNAL_TEST_LIST**) where users/trigger_strings are stored as follows:
 
@@ -19,7 +19,7 @@ Org contact user is provided with an access token - details TBD but allowing:
 2. PR comment-body reads and 
 3. PR comment writes.
 
-Registered user then requests an internal-test run by entering the string "/<trigger-string>" as a PR comment body.
+Registered user then requests an internal-test run by entering the string "/trigger-string" as a PR comment body.
 Our 'internal-test-request comment' trigger then fires:
 - checks that its a new comment (no edits or deletes)
 - checks that its a PR (and not an Issue - Github internal quirk)
@@ -30,12 +30,12 @@ If any checks fail the comment trigger stops and any remaining action jobs or st
 
 If all checks pass the 'github-actions' bot then issues a formal 'internal-test request' as a comment including the following request data in the comment body: 
 
-    /<trigger-string>
+    /trigger-string
     PR reference (commit SHA) - again by Github quirk, this is not simple to find.
     registered requester @login_name (e.g. @user1)
 
 Internal-test-side bot then scans for such comments, runs internal tests and reports pass/fail to the external PR as a comment
-- (<Scott's stuff goes here>)
+- (Scott's stuff goes here)
 
 ## Notes:
 
