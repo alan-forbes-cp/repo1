@@ -24,7 +24,7 @@ jobs:
       run_processing: ${{ steps.checker.outputs.run_processing }}
     steps:
       - name: Check trigger
-      - id: checker
+        id: checker
         run: |
           echo "Checking trigger ..."
           if [[ ! "${PR_LIST}" =~ "/${PR_USER}${PR_BODY}" ]] ; then
