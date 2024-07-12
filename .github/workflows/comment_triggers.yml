@@ -21,10 +21,10 @@ jobs:
     if: ${{ github.event.issue.pull_request }}
     runs-on: ubuntu-latest
     outputs:
-      run_processing: ${{ steps.checker.outputs.run_processing }}
+      run_processing: ${{ steps.CHECKER.outputs.run_processing }}
     steps:
       - name: Check trigger
-        id: checker
+        id: CHECKER
         run: |
           echo "Checking trigger ..."
           FLAG="NO"
