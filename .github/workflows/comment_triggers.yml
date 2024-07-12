@@ -27,17 +27,20 @@ jobs:
         id: checker
         run: |
           echo "Checking trigger ..."
+          FLAG="YES"
           if [[ ! "${PR_LIST}" =~ "/${PR_USER}${PR_BODY}" ]] ; then
-            echo "PR user trigger check failed ... quitting"
-            exit 1
+            echo "PR user trigger check failed ... processing will be skipped"
+            FLAG="NO"
+          else
+            STATE=$(gh pr view $PR_NUMBER --repo $GH_REPO --json state --jq .state)
+            if [ "$STATE" != "OPEN" ]; then
+              echo "PR is not open .. processing will be skipped"
+              FLAG="NO"
+            else
+              echo "Trigger OK"
+            fi
           fi
-          STATE=$(gh pr view $PR_NUMBER --repo $GH_REPO --json state --jq .state)
-          if [ "$STATE" != "OPEN" ]; then
-            echo "PR is not open .. quitting"
-            exit 1
-          fi
-          echo "run_processing=YES" >> $GITHUB_OUTPUT
-          echo "Trigger OK"
+          echo "run_processing=$FLAG" >> $GITHUB_OUTPUT
         env:
           PR_USER: ${{ github.event.comment.user.login }}
           PR_BODY: ${{ github.event.comment.body }}
