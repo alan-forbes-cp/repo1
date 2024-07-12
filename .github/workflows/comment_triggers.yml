@@ -20,8 +20,11 @@ jobs:
     name: PR i-t-r trigger check
     if: ${{ github.event.issue.pull_request }}
     runs-on: ubuntu-latest
+    outputs:
+      run_processing: ${{ steps.checker.outputs.run_processing }}
     steps:
       - name: Check trigger
+      - id: checker
         run: |
           echo "Checking trigger ..."
           if [[ ! "${PR_LIST}" =~ "/${PR_USER}${PR_BODY}" ]] ; then
@@ -33,6 +36,7 @@ jobs:
             echo "PR is not open .. quitting"
             exit 1
           fi
+          echo "run_processing=YES" >> $GITHUB_OUTPUT
           echo "Trigger OK"
         env:
           PR_USER: ${{ github.event.comment.user.login }}
@@ -51,7 +55,7 @@ jobs:
     # * Github's 'gh' cli must be available on runner
     name: PR i-t-r processing
     needs: pr_internal_test_request_trigger_check
-    if: ${{ github.event.issue.pull_request }}
+    if: ${{ github.event.issue.pull_request && ( needs.pr_internal_test_request_trigger_check.outputs.run_processing == 'YES' }}
     runs-on: ubuntu-latest
     permissions:
       pull-requests: write
