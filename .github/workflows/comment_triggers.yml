@@ -52,7 +52,7 @@ jobs:
     # Creates new PR comment with 'internal-test-request data' body:
     # * trigger string
     # * PR repo ref
-    # * commentator name
+    # * commentator @name
     # Requires:
     # * Github's 'gh' cli must be available on runner
     name: PR i-t-r processing
