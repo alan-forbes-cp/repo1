@@ -16,7 +16,7 @@ jobs:
     # * specific trigger string (i.e. comment-body content e.g. "/verify")
     # * open PRs
     # Requires:
-    # * Github's 'gh' cli must be available on runner
+    # * Github's 'gh' command line tool must be available on runner
     name: PR i-t-r trigger check
     if: ${{ github.event.issue.pull_request }}
     runs-on: ubuntu-latest
@@ -54,7 +54,7 @@ jobs:
     # * PR repo ref
     # * commentator @name
     # Requires:
-    # * Github's 'gh' cli must be available on runner
+    # * Github's 'gh' command line tool must be available on runner
     name: PR i-t-r processing
     needs: pr_internal_test_request_trigger_check
     if: ${{ github.event.issue.pull_request && ( needs.pr_internal_test_request_trigger_check.outputs.run_processing == 'YES' ) }}
@@ -73,7 +73,7 @@ jobs:
           GH_REPO: ${{ github.repository }}
       - name: Add comment with i-t-r data
         run: |
-          gh issue comment "$PR_NUMBER" --body "$BODY"
+          gh pr comment "$PR_NUMBER" --body "$BODY"
         env:
           PR_NUMBER: ${{ github.event.issue.number }}
           GH_TOKEN: ${{ github.token }}
