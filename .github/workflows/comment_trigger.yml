@@ -30,7 +30,7 @@ jobs:
         run: |
           echo "Checking trigger ..."
           FLAG="NO"
-          if [[ ! "${PR_LIST}" =~ "/${PR_USER}${PR_BODY}" ]] ; then
+          if [[ ! "${PR_LIST}" =~ "/${PR_USER}/${PR_BODY}" ]] ; then
             echo "PR user trigger check failed ... processing will be skipped"
           else
             STATE=$(gh pr view $PR_NUMBER --repo $GH_REPO --json state --jq .state)

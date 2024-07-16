@@ -5,8 +5,8 @@
 
 Supplied user & trigger information is added to an action repository secret (currently **INTERNAL_TEST_LIST**) where users/trigger_strings are stored as follows:
 
-    /user1/trigger1 /user2/trigger1
-    /user3/trigger2 /user4/trigger2
+    /user1//trigger1 /user2//trigger1
+    /user3//trigger2 /user4//trigger2
     etc
 
 - Each entry is space or newline separated.
