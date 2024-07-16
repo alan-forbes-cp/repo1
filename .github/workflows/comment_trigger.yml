@@ -30,7 +30,7 @@ jobs:
         run: |
           echo "Checking trigger ..."
           FLAG="NO"
-          if [[ ! "${PR_LIST}" =~ "/${PR_USER}/${PR_BODY}" ]] ; then
+          if [[ ! "$PR_LIST" =~ "/$PR_USER/$PR_BODY" ]] ; then
             echo "PR user trigger check failed ... processing will be skipped"
           else
             STATE=$(gh pr view $PR_NUMBER --repo $GH_REPO --json state --jq .state)
@@ -75,16 +75,16 @@ jobs:
           GH_REPO: ${{ github.repository }}
       - name: Add comment with i-t-r data
         run: |
-          gh pr comment "$PR_NUMBER" --body "$BODY"
+          gh pr comment "$PR_NUMBER" --body "$PR_BODY"
         env:
           PR_NUMBER: ${{ github.event.issue.number }}
-          GH_TOKEN: ${{ github.token }}
-          GH_REPO: ${{ github.repository }}
-          BODY: >
+          PR_BODY: >
             ${{ github.event.comment.body }}
             ${{ steps.PR_REF.outputs.pr_ref }}
             @${{ github.event.comment.user.login }}
             **Codeplay Internal Testing: Request Validated**
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
       - name: Example build 1 - checkout PR ref
         uses: actions/checkout@v4
         with:
