@@ -1,7 +1,7 @@
 # Rationale for 'internal testing runs via comment triggers' workflow:
 
 'Org contact user' supplies a list of login names and a unique org 'trigger string' (as per login names, this should contain only alphanumeric characters and dashes).
-- usage for trigger strings in comments is then: **/trigger-string**
+- usage for user trigger strings in comments is then: **/trigger-string**
 
 Supplied user & trigger information is added to an action repository secret (currently **INTERNAL_TEST_LIST**) where users/trigger_strings are stored as follows:
 
@@ -29,7 +29,7 @@ Our 'internal-test-request comment' trigger then fires:
 - checks that the user exists in the INTERNAL_TEST_LIST secret and that the trigger string used is assigned to that user.
 - checks that the PR is open.
 
-If any checks fail the comment trigger stops and any remaining action jobs or steps will be silently skipped. The action itself will never fail.
+If any checks fail the comment trigger stops and any remaining trigger action jobs or steps will be silently skipped. The action itself will never fail.
 
 If all checks pass the 'github-actions' bot then issues a validated 'internal-test request' as a comment including the following request data in the comment body:
 
@@ -37,6 +37,10 @@ If all checks pass the 'github-actions' bot then issues a validated 'internal-te
     PR reference (commit SHA - which, again by Github quirk, is not simple to find.)
     validated requester @login_name (e.g. @user1)
     Codeplay Internal Testing: Request Validated
+
+e.g.
+
+    /verify 584e585 @alan-forbes-cp Codeplay Internal Testing: Request Validated
 
 Internal-test-side bot (via access token) then scans for such comments, runs internal tests and reports final pass/fail to the external-side PR as a comment.
 - (Scott's stuff goes here)
