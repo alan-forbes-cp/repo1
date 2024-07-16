@@ -20,6 +20,8 @@ jobs:
     name: PR i-t-r trigger check
     if: ${{ github.event.issue.pull_request }}
     runs-on: ubuntu-latest
+    permissions:
+      pull-requests: read
     outputs:
       run_processing: ${{ steps.CHECKER.outputs.run_processing }}
     steps:

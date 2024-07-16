@@ -5,15 +5,14 @@
 
 Supplied user & trigger information is added to an action repository secret (currently **INTERNAL_TEST_LIST**) where users/trigger_strings are stored as follows:
 
-    /user1/string1
-    /user2/string1
-    /user3/string2
-    /user4/string2
+    /user1/trigger1 /user2/trigger1
+    /user3/trigger2 /user4/trigger2
     etc
 
 - Each entry is space or newline separated.
 - This registers users as an 'internal-test requester' and binds each to a specific trigger string.
 - Note that existing secret settings in Github are not visible when being updated so the internal test list content should be saved elsewhere (TBD e.g 1password??) and reapplied in full on each update.
+- The list should be periodically audited to confirm that contents are still required.
 
 Org contact user defines a repo access token allowing:
 1. scanning of PR comments, 
