@@ -15,10 +15,12 @@ Supplied user & trigger information is added to an action repository secret (cur
 - This registers users as an 'internal-test requester' and binds each to a specific trigger string.
 - Note that existing secret settings in Github are not visible when being updated so the internal test list content should be saved elsewhere (TBD e.g 1password??) and reapplied in full on each update.
 
-Org contact user is provided with a repo access token - details TBD but allowing:
+Org contact user defines a repo access token allowing:
 1. scanning of PR comments, 
 2. PR comment-body reads and 
 3. PR comment writes.
+
+Note that 'fine-grain' user PATs allow the setting of 'repository permissions' including read/write "pull request" perms (pull requests and related comments, assignees, labels, milestones, and merges). These offer the internal-side granularity and permissons required (i.e. as used in Scott's internal-side implementation).
 
 Registered user then requests an internal-test run by entering the string "/trigger-string" as a PR comment body.
 Our 'internal-test-request comment' trigger then fires:
@@ -34,8 +36,9 @@ If all checks pass the 'github-actions' bot then issues a validated 'internal-te
     /trigger-string
     PR reference (commit SHA - which, again by Github quirk, is not simple to find.)
     validated requester @login_name (e.g. @user1)
+    Codeplay Internal Testing: Request Validated
 
-Internal-test-side bot (supplied with access token) then scans for such comments, runs internal tests and reports final pass/fail to the external-side PR as a comment.
+Internal-test-side bot (via access token) then scans for such comments, runs internal tests and reports final pass/fail to the external-side PR as a comment.
 - (Scott's stuff goes here)
 
 ## Notes:
@@ -44,7 +47,6 @@ Internal-test-side bot (supplied with access token) then scans for such comments
 - Only comment trigger actions contained in the mainline workflow files are used (they run "from the mainline" which partly explains why it can be tricky to get PR branch information e.g. PR commit SHA).
 - Currently our action requires that any runner handling our comment trigger has the Github "gh" cli tool installed - however all (non-self-hosted) runners will have this.
 - Formal internal-test request data (i.e. external-side bot comment text) can be tailored for internal-side handshaking reqs as required.
-- Hopefully there is already a significant degree of 'best practice' wisdom on the setting of perms and applying of Github authentication techniques. That said ... 'repository permissions' include read/write "pull request" perms (pull requests and related comments, assignees, labels, milestones, and merges) and appear to offer something close to the internal-side granularity and restrictions we're after.
 - Security-related aspects for review include:
   - use of secrets
   - use of vanilla 'github.token'
