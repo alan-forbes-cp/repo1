@@ -82,7 +82,7 @@ jobs:
             ${{ github.event.comment.body }}
             ${{ steps.PR_REF.outputs.pr_ref }}
             @${{ github.event.comment.user.login }}
-            **Codeplay internal testing request validated**
+            **Codeplay internal testing: request validated**
       - name: Example build 1 - checkout PR ref
         uses: actions/checkout@v4
         with:
