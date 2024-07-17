@@ -1,59 +1,65 @@
-# Rationale for 'internal testing runs via comment triggers' workflow:
+# 'Internal testing runs via comment triggers' - rationale and workflow:
 
-'Org contact user' supplies a list of login names and a unique org 'trigger string' (as per login names, this should contain only alphanumeric characters and dashes).
-- usage for user comment triggers is then: **/trigger-string**
+As a first step, 'Org contact user' supplies a list of login names and a unique org 'trigger string' (as per login names, this should contain only alphanumeric characters and dashes).
+- usage for all Org user comment triggers is then: **/trigger-string**
 
-Supplied user & trigger information is added to an action repository secret (currently **INTERNAL_TEST_LIST**) where users/trigger_strings are stored as follows:
+Supplied user & trigger information is added to an action repository secret (currently **INTERNAL_TEST_LIST**) where users and comment triggers are stored as follows:
 
     /user1//trigger1 /user2//trigger1
     /user3//trigger2 /user4//trigger2
     etc
 
-- Each entry is space or newline separated.
-- This registers users as an 'internal-test requester' and binds each to a specific comment trigger e.g. '/trigger2' above..
-- Note that existing secret settings in Github are not visible when being updated so the internal test list content should be saved elsewhere (TBD e.g 1password??) and reapplied in full on each update.
+- Each entry is space(s) or newline(s) separated.
+- This registers users as an 'internal-test requester' and binds each to a specific comment trigger e.g. '/trigger2' above.
+- Note that existing secret settings in Github are not visible when being updated so the internal test list content should be stored elsewhere (TBD e.g 1password??) and reapplied in full on each update.
 - The list should be periodically audited to confirm that contents are still required.
 
-Org contact user defines a repo access token allowing:
+Org contact user then defines a repo access token allowing:
 1. scanning of PR comments, 
 2. PR comment-body reads and 
 3. PR comment writes.
 
-Note that 'fine-grain' user PATs allow the setting of 'repository permissions' including read/write "pull request" perms (pull requests and related comments, assignees, labels, milestones, and merges). These offer the internal-side granularity and permissons required (i.e. as used in Scott's internal-side implementation).
+Note that 'fine-grain' user PATs allow the individual setting of various 'repository permissions' including read/write "pull request" perms (pull requests and related comments, assignees, labels, milestones, and merges). These offer the Internal-side granularity and permissons required (i.e. and are used in our Internal-side implementation).
 
-Registered user then requests an internal-test run by entering the comment trigger ("/trigger-string") as a PR comment body.
+Registered Org users then request an internal-test run by entering the comment trigger ("/trigger-string") as a PR comment body.
 Our 'internal-test-request comment' trigger then fires:
 - checks that its a new comment (no edits or deletes).
 - checks that its a PR (and not an Issue - Github internal quirk).
-- checks that the user exists in the INTERNAL_TEST_LIST secret and that the comment trigger used is assigned to that user.
+- checks that the Org user exists in the INTERNAL_TEST_LIST and that the comment trigger used is assigned to that user.
 - checks that the PR is open.
 
-If any checks fail the trigger stops and any remaining trigger action jobs or steps will be silently skipped. The action itself will never fail.
+If any check fails the trigger stops and any remaining trigger action steps and jobs will be silently skipped. The action itself will never fail.
 
-If all checks pass the 'github-actions' bot then issues a validated 'internal-test request' as a comment including the following request data in the comment body:
+If all checks pass the External-side 'github-actions' bot then issues a validated 'internal-test request' as a comment including request data in the body in the following format:
 
     /trigger-string
-    PR reference (commit SHA - which, again by Github quirk, is not simple to find.)
-    validated requester @login_name (e.g. @user1)
+    <PR reference> (commit SHA - which, again by Github quirk, is not simple to find.)
+    <validated requester @login_name> (e.g. @user1)
     Codeplay Internal Testing: Request Validated
 
 e.g.
 
     /verify 584e585 @alan-forbes-cp Codeplay Internal Testing: Request Validated
 
-Internal-test-side bot (via access token) then scans for such comments, runs internal tests and reports final pass/fail to the external-side PR as a comment.
-- (Scott's stuff goes here)
+Internal-side bot (via access token) then scans for such comments, runs internal tests and reports final pass/fail to the External-side PR as a comment.
+- Suggested 'best practice' for the Internal-side is to respond both with a "Started" comment and with a final "Completed: PASS|FAIL|DID NOT RUN|TIMED OUT|etc." comment, adopting the format used by the External-side. As a minimum, Internal-side should indicate test completion.
+- Note that Internal-side comments are not validated or policed by the External-side.
+
+e.g.
+
+    /verify 584e585 @alan-forbes-cp Codeplay Internal Testing: Started
+    /verify 584e585 @alan-forbes-cp Codeplay Internal Testing: Completed: PASS
 
 ## Notes:
 
 - Comments in PRs and Issues are "the same but different" so its necessary to distinguish between the two in the action code.
 - Only trigger actions contained in the mainline workflow files are used (they run "from the mainline" which partly explains why it can be tricky to get PR branch information e.g. PR commit SHA).
 - Currently our action requires that any runner handling our trigger has the Github "gh" cli tool installed - however all (non-self-hosted) runners will have this.
-- Formal internal-test request data (i.e. external-side bot comment text) can be tailored for internal-side handshaking reqs as required.
+- Formal internal-test request data (i.e. External-side bot comment text) can be tailored for Internal-side handshaking reqs as required.
 - Security-related aspects for review include:
   - use of secrets
   - use of vanilla 'github.token'
   - use of the extra "pull_requests:write" permission in action
   - use of env vars in action's bash scripting
-  - auth perms for internal-side bots
+  - auth perms for Internal-side bots
   - anything else?

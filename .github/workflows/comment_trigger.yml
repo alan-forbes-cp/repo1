@@ -62,7 +62,7 @@ jobs:
     if: ${{ github.event.issue.pull_request && ( needs.pr_internal_test_request_trigger_check.outputs.run_processing == 'YES' ) }}
     runs-on: ubuntu-latest
     permissions:
-      pull-requests: write
+      pull-requests: read
     steps:
       - name: Obtain PR repo ref
         id: PR_REF
