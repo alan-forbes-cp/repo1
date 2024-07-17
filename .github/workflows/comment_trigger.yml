@@ -73,7 +73,7 @@ jobs:
           PR_NUMBER: ${{ github.event.issue.number }}
           GH_TOKEN: ${{ github.token }}
           GH_REPO: ${{ github.repository }}
-      - name: Add comment with i-t-r data
+      - name: Add PR comment with i-t-r data
         run: |
           gh pr comment "$PR_NUMBER" --body "$PR_BODY"
         env:
