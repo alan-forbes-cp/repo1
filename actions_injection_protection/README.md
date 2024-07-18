@@ -1,6 +1,6 @@
 # 'Actions Security Hardening Miscellany' - summary research notes:
 
-The initial intention with this task was to consider 'actions injection protection' only. However as this is closely related to other aspects of 'security hardening' the scope has broadened slightly. Each topic consists of a very brief advice summary together with an outline of the topic's treatment in relation to our 'comment trigger' action task and Template-Repo (both where applicable).
+The initial intention with this task was to consider 'actions injection protection' only. However as this is closely related to other aspects of 'security hardening' the scope has broadened slightly. Each topic consists of a very brief advice summary together with an outline of the topic's treatment in relation to our 'comment trigger' action and Template-Repo (both where applicable).
 
 ## Useful links:
 
