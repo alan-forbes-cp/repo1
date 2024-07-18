@@ -12,14 +12,14 @@ jobs:
     # Checks for:
     # * new comments (See 'issue_comment:types:' above)
     # * PR comments (Issue comments are skipped - also see 'issue_comment:' above)
+    # * comments with the '/trigger_string' format
     # * comments from specific user(s)
     # * specific trigger string (i.e. comment-body content e.g. "/verify")
     # * open PRs
     # Requires:
     # * Github's 'gh' command line tool must be available on runner
     name: PR i-t-r trigger check
-    #if: ${{ github.event.issue.pull_request }}
-    if: ${{ github.event.issue.pull_request && startsWith(github.event.comment.body, '/') && ( ! contains(github.event.comment.body, ' ') ) }}
+    if: ${{ github.event.issue.pull_request && startsWith(github.event.comment.body, '/') && ( ! contains(github.event.comment.body, ' ') ) && ( ! contains(toJson(github.event.comment.body), '\r\n') ) }}
     runs-on: ubuntu-latest
     permissions:
       pull-requests: read
