@@ -10,16 +10,17 @@ Supplied user & trigger information is added to an action repository secret (cur
     etc
 
 - Each entry is space(s) or newline(s) separated.
-- This registers users as an 'internal-test requester' and binds each to a specific comment trigger e.g. '/trigger2' above.
 - Note that existing secret settings in Github are not visible when being updated so the internal test list content should be stored elsewhere (TBD e.g 1password??) and reapplied in full on each update.
 - The list should be periodically audited to confirm that contents are still required.
+
+This registers users as an 'internal-test requester' and binds each to a specific comment trigger e.g. '/trigger2' above.
 
 Org contact user then defines a repo access token allowing:
 1. scanning of PR comments, 
 2. PR comment-body reads and 
 3. PR comment writes.
 
-Note that 'fine-grain' user PATs allow the individual setting of various 'repository permissions' including read/write "pull request" perms (pull requests and related comments, assignees, labels, milestones, and merges). These offer the Internal-side granularity and permissons required (i.e. and are used in our Internal-side implementation).
+Note that 'fine-grain' user PATs allow the individual setting of various 'repository permissions' including read/write "pull request" perms (pull requests and related comments, assignees, labels, milestones, and merges). These offer the Internal-side granularity and permissons required (and are used in our own Internal-side implementation).
 
 Registered Org users then request an internal-test run by entering the comment trigger ("/trigger-string") as a PR comment body.
 Our 'internal-test-request comment' trigger then fires:
@@ -30,7 +31,7 @@ Our 'internal-test-request comment' trigger then fires:
 
 If any check fails the trigger stops and any remaining trigger action steps and jobs will be silently skipped. The action itself will never fail.
 
-If all checks pass the External-side 'github-actions' bot then issues a validated 'internal-test request' as a comment including request data in the body in the following format:
+If all checks pass the External-side 'github-actions' bot then issues a validated 'internal-test request' as a comment which includes a body with request data in the following format:
 
     /trigger-string
     <PR reference> (commit SHA - which, again by Github quirk, is not simple to find.)
@@ -42,10 +43,10 @@ e.g.
     /verify 584e585 @alan-forbes-cp Codeplay Internal Testing: Request Validated
 
 Internal-side bot (via access token) then scans for such comments, runs internal tests and reports final pass/fail to the External-side PR as a comment.
-- Suggested 'best practice' for the Internal-side is to respond both with a "Started" comment and with a final "Completed: PASS|FAIL|DID NOT RUN|TIMED OUT|etc." comment, adopting the format used by the External-side. As a minimum, Internal-side should indicate test completion.
+- Suggested 'best practice' for the Internal-side is to respond both with a "Started" comment and with a final "Completed: PASS|FAIL|DID NOT RUN|TIMED OUT|etc." comment, adopting the format used by the External-side. As a minimum, Internal-side should indicate test completion as a handshake between the sides.
 - Note that Internal-side comments are not validated or policed by the External-side.
 
-e.g.
+e.g. of Internal-side comments:
 
     /verify 584e585 @alan-forbes-cp Codeplay Internal Testing: Started
     /verify 584e585 @alan-forbes-cp Codeplay Internal Testing: Completed: PASS
