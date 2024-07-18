@@ -1,4 +1,4 @@
-# 'Actions Security Hardening' - summary research notes:
+# 'Actions Security Hardening Miscellany' - summary research notes:
 
 The initial intention with this task was to consider 'actions injection protection' only. However as this is closely related to other aspects of 'security hardening' the scope has broadened slightly. Each topic consists of a very brief advice summary together with an outline of its treatment in relation to our 'comment trigger' action task and Template-Repo (both where applicable).
 
@@ -18,7 +18,7 @@ General advice on [action security hardening](https://blog.gitguardian.com/githu
 ## GITHUB_TOKEN:
 
 - Explicitly limit GITHUB_TOKEN permissions and scope its usage minimally.
-- ***comment trigger action handling / Template-Repo:*** Usage is set to allow pull request reads/writes only as required.
+- ***comment trigger action handling / Template-Repo:*** Trigger action usage is set to allow pull request reads/writes only as required. The best practice recommendation for Template-Repo actions is to always explicitly set the permissions.
 
 ## Injection protection:
 
@@ -42,8 +42,8 @@ General advice on [action security hardening](https://blog.gitguardian.com/githu
 
 ## Repo-level workflow permissions:
 - Set the following (Settings/Actions/General):
--- Read repository contents and packages permissions [ON]
--- Allow GitHub Actions to create and approve pull requests [OFF] 
+    - Read repository contents and packages permissions [ON]
+    - Allow GitHub Actions to create and approve pull requests [OFF] 
 - ***comment trigger action handling / Template-Repo:*** These are set in our Template-Repo.
 
 ## Fork PR workflow runs:
