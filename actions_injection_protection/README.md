@@ -1,6 +1,6 @@
-# 'Actions Injection Protection' - summary research notes:
+# 'Actions Security Hardening' - summary research notes:
 
-The initial intention with this task was to consider 'injection protection' only. However as this is closely related to other aspects of 'security hardening' the scope has broadened slightly. Each topic consists of a brief summary together with an outline of its treatment in relation to our 'comment trigger' action task and Template-Repo (where applicable).
+The initial intention with this task was to consider 'actions injection protection' only. However as this is closely related to other aspects of 'security hardening' the scope has broadened slightly. Each topic consists of a very brief summary together with an outline of its treatment in relation to our 'comment trigger' action task and Template-Repo (both where applicable).
 
 ## Useful links:
 
@@ -22,7 +22,7 @@ General advice on [action security hardening](https://blog.gitguardian.com/githu
 
 ## Actions injection protection:
 
-- External actions are preferred to shell 'run' steps where possible.
+- External actions are preferred to inline shell 'run' steps where possible.
 - Where shells are used, double quote variables to avoid word splitting.
 - Prevent injections by setting the value of expressions to an intermediate environment variable.
 - Declare env variables at step level (i.e. lowest) where possible.
@@ -38,7 +38,7 @@ General advice on [action security hardening](https://blog.gitguardian.com/githu
 
 - Minimise or avoid the use of 3rd party actions.
 - Enable Dependabot updates for actions.
-- ***comment trigger handling:*** The trigger uses only the standard "checkout" action. Our Template-Repo also runs Dependabot.
+- ***comment trigger handling:*** The trigger uses no 3rd party actions. Our Template-Repo also runs Dependabot.
 
 ## Repo-level workflow permissions:
 - Set the following (Settings/Actions/General):
