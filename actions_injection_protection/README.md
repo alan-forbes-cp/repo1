@@ -39,7 +39,7 @@ General advice on [action security hardening](https://blog.gitguardian.com/githu
 - Minimise or avoid the use of 3rd party actions.
 - Where they are used, pin the version with a commit hash (rather than a tag).
 - Enable Dependabot updates for actions.
-- ***Status of comment trigger action & Template-Repo:*** The trigger uses no 3rd party actions. Our Template-Repo pins the actions and also runs Dependabot.
+- ***Status of comment trigger action & Template-Repo:*** The trigger uses one 3rd party action (checkout) which is pinned. Similarly, our Template-Repo pins its actions and also runs Dependabot.
 
 ## Repo-level workflow permissions:
 - Set the following repo workflow perms (in Settings/Actions/General):

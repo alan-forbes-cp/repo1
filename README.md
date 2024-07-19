@@ -61,5 +61,6 @@ e.g. of Internal-side comments:
   - use of vanilla 'github.token'
   - use of the extra "pull_requests:write" permission in action
   - use of env vars in action's bash scripting
+  - use of an explicit commit hash with the 'checkout' action
   - auth perms for Internal-side bots
   - anything else?
