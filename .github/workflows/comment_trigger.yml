@@ -27,7 +27,7 @@ jobs:
       run_processing: ${{ steps.CHECKER.outputs.run_processing }}
     steps:
       - name: Obtain internal test list
-        uses: actions/checkout@v4
+        uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
         with:
           sparse-checkout: |
             .github/workflows/internal_test_list
