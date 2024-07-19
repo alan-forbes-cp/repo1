@@ -30,11 +30,9 @@ jobs:
         uses: actions/checkout@v4
         with:
           sparse-checkout: |
-            $PR_LIST
+            .github/workflows/internal_test_list
           sparse-checkout-cone-mode: false
           ref: master
-        env:
-          PR_LIST: ./.github/workflows/internal_test_list
       - name: Check trigger
         id: CHECKER
         run: |
@@ -55,7 +53,7 @@ jobs:
         env:
           PR_USER: ${{ github.event.comment.user.login }}
           PR_BODY: ${{ github.event.comment.body }}
-          PR_LIST: ./.github/workflows/internal_test_list
+          PR_LIST: .github/workflows/internal_test_list
           PR_NUMBER: ${{ github.event.issue.number }}
           GH_TOKEN: ${{ github.token }}
           GH_REPO: ${{ github.repository }}
