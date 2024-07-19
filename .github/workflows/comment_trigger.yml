@@ -14,7 +14,7 @@ jobs:
     # * PR comments (Issue comments are skipped - also see 'issue_comment:' above)
     # * comments with '/trigger_string' format
     # * comments from specific user(s)
-    # * specific trigger string (i.e. comment-body content e.g. "/verify")
+    # * comments with a specific trigger string (i.e. comment-body content e.g. "/verify")
     # * open PRs
     # Requires:
     # * Github's 'gh' command line tool must be available on runner
@@ -31,7 +31,7 @@ jobs:
         run: |
           echo "Checking trigger ..."
           FLAG="NO"
-          if [[ ! "$PR_LIST" =~ "/$PR_USER/$PR_BODY" ]] ; then
+          if ! grep -q "/$PR_USER/$PR_BODY" "$PR_LIST" ; then
             echo "PR user trigger check failed ... processing will be skipped"
           else
             STATE=$(gh pr view $PR_NUMBER --repo $GH_REPO --json state --jq .state)
@@ -46,16 +46,17 @@ jobs:
         env:
           PR_USER: ${{ github.event.comment.user.login }}
           PR_BODY: ${{ github.event.comment.body }}
-          PR_LIST: ${{ secrets.INTERNAL_TEST_LIST }}
+          PR_LIST: ./.github/workflows/internal_test_list
           PR_NUMBER: ${{ github.event.issue.number }}
           GH_TOKEN: ${{ github.token }}
           GH_REPO: ${{ github.repository }}
 
   pr_internal_test_request_processing:
     # Creates new PR comment with 'internal-test-request data' body:
-    # * trigger string
+    # * comment trigger string
     # * PR repo ref
-    # * commentator @name
+    # * requester @name
+    # * request status string
     # Requires:
     # * Github's 'gh' command line tool must be available on runner
     name: PR i-t-r processing
