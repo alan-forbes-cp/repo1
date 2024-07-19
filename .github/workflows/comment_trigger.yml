@@ -29,8 +29,12 @@ jobs:
       - name: Obtain internal test list
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0
+          sparse-checkout: |
+            $PR_LIST
+          sparse-checkout-cone-mode: false
           ref: master
+        env:
+          PR_LIST: ./.github/workflows/internal_test_list
       - name: Check trigger
         id: CHECKER
         run: |
@@ -92,12 +96,3 @@ jobs:
             **Codeplay Internal Testing: Request Validated**
           GH_TOKEN: ${{ github.token }}
           GH_REPO: ${{ github.repository }}
-      - name: Example build 1 - checkout PR ref
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-          ref: ${{ steps.PR_REF.outputs.pr_ref }}
-      - name: Example build 2 - list latest commit and repo content
-        run: |
-          git log -1
-          ls -l
