@@ -26,12 +26,13 @@ jobs:
     outputs:
       run_processing: ${{ steps.CHECKER.outputs.run_processing }}
     steps:
-      - name: Check trigger
-        id: CHECKER
+      - name: Obtain internal test list
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
           ref: master
+      - name: Check trigger
+        id: CHECKER
         run: |
           echo "Checking trigger ..."
           FLAG="NO"
