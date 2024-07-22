@@ -38,8 +38,10 @@ jobs:
         run: |
           echo "GH ..."
           gh pr view $PR_NUMBER --repo $GH_REPO
-          echo "EVENT_PATH ..."
-          more $GITHUB_EVENT_PATH
+          echo "HEAD REF"
+          gh pr view $PR_NUMBER --repo $GH_REPO --json headRefName | jq -r '.headRefName'
+          echo "BASE REF"
+          gh pr view $PR_NUMBER --repo $GH_REPO --json baseRefName | jq -r '.baseRefName'
           echo "Checking trigger ..."
           FLAG="NO"
           if ! grep -Fq "/$PR_USER/$PR_BODY" "$PR_LIST" ; then
