@@ -1,9 +1,9 @@
-# 'Internal testing runs via comment triggers' - rationale and workflow:
+# 'Run internal testing via comment triggers' - rationale and workflow:
 
-As a first step, 'Org contact user' supplies a list of user names and a unique org comment 'trigger string' which should also conform to user name format and length (alphanumeric characters & dashes, 39 chars).
-- usage for all Org user comment triggers is then: **/trigger-string**
+As a first step, an 'Org contact user' compiles a list of Org-approved user names and a unique Org comment 'trigger string'. The trigger string should conform to user name format and length: alphanumeric characters & dashes, 39 chars.
+- thereafter usage for all Org-approved user comment triggers is: **/trigger-string**
 
-Supplied user & trigger information is added to a repository registry (currently **.github/workflows/internal_test_list**) where users and comment triggers are stored as follows:
+User and trigger information is then added to a repository registry (currently repo file: **.github/workflows/internal_test_list**) where users and comment triggers are stored as follows:
 
     /user1//trigger1 /user2//trigger1
     /user3//trigger2 /user4//trigger2
@@ -12,26 +12,25 @@ Supplied user & trigger information is added to a repository registry (currently
 - Each entry is space(s) or newline(s) separated.
 - The list should be periodically audited to confirm that contents are still required.
 
-This registers users as an 'internal-test requester' and binds each to a specific comment trigger e.g. '/trigger2' above.
+On merge of the updated list to the master branch, each user is registered as an 'internal-test requester' and is bound to a specific Org comment trigger e.g. '/trigger2' above. Via this mechanism, External-side users can request Internal-side test runs.
 
-Org contact user then defines a repo access token allowing:
+Org contact user shold then define a repo access token allowing:
 1. scanning of PR comments, 
 2. PR comment-body reads and 
 3. PR comment writes.
 
-Note that 'fine-grain' user PATs allow the individual setting of various 'repository permissions' including read/write "pull request" perms (pull requests and related comments, assignees, labels, milestones, and merges). These offer the Internal-side granularity and permissons required (and are used in our own Internal-side implementation).
+Note that 'fine-grain' user-PATs allow the setting of various individual 'repository permissions' including read/write "pull request" perms (pull requests and related comments, assignees, labels, milestones, and merges). These offer the Internal-side granularity and permissons required (and are used in our own Internal-side implementation).
 
-Registered Org users then request an internal-test run by entering the comment trigger ("/trigger-string") as a PR comment body.
-Our 'internal-test-request comment' trigger then fires:
-- checks that its a new comment (no edits or deletes).
-- checks that its a PR (and not an Issue - Github internal quirk).
-- chcks that the comment has correct '/trigger_string' format.
-- checks that the Org user exists in the internal_test_list registry and that the comment trigger used is assigned to that user.
-- checks that the PR is open.
+When a registered Org user makes a request to run an internal-test by entering the comment trigger ("/trigger-string") as a PR comment body our 'internal-test-request comment' trigger fires. It checks the following:
+- its a new comment (no edits or deletes).
+- its a PR (and not an Issue - Github internal quirk).
+- the comment has the correct '/trigger_string' format.
+- the Org user exists in the internal_test_list registry and the comment trigger used is assigned to that user.
+- the PR is open.
 
 If any check fails the trigger stops and any remaining trigger action steps and jobs will be silently skipped. The action itself will never fail.
 
-If all checks pass the External-side 'github-actions' bot then issues a validated 'internal-test request' as a comment which includes a body with request data in the following format:
+If all checks pass the External-side 'github-actions' bot then issues a validated 'internal-test request' as a comment which includes a request-data body in the following format:
 
     /trigger-string
     <PR reference> (commit SHA - which, again by Github quirk, is not simple to find.)
@@ -42,7 +41,7 @@ e.g.
 
     /verify 584e585 @alan-forbes-cp Codeplay Internal Testing: Request Validated
 
-Internal-side bot (via access token) then scans for such comments, runs internal tests and reports final pass/fail to the External-side PR as a comment.
+Using the generated access token, the Internal-side bot then scans for such comments, runs internal tests and reports final pass/fail to the External-side PR as a comment.
 - Suggested 'best practice' for the Internal-side is to respond both with a "Started" comment and with a final "Completed: PASS|FAIL|DID NOT RUN|TIMED OUT|etc." comment, adopting the format used by the External-side. As a minimum, Internal-side should indicate test completion as a handshake between the sides.
 - Note that Internal-side comments are not validated or policed by the External-side.
 
@@ -54,7 +53,7 @@ e.g. of Internal-side comments:
 ## Notes:
 
 - Comments in PRs and Issues are "the same but different" so its necessary to distinguish between the two in the action code.
-- Only trigger actions contained in the mainline workflow files are used (they run "from the mainline" which partly explains why it can be tricky to get PR branch information e.g. PR commit SHA).
+- Only trigger actions contained in the mainline workflow files are used (they run "from the mainline" which partly explains why it can be tricky to get PR branch information e.g. PR branch name and commit SHA).
 - Currently our action requires that any runner handling our trigger has the Github "gh" cli tool installed - however all (non-self-hosted) runners will have this.
 - Formal internal-test request data (i.e. External-side bot comment text) can be tailored for Internal-side handshaking reqs as required.
 - Security-related aspects for review include:
