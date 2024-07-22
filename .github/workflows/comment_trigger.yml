@@ -36,6 +36,8 @@ jobs:
       - name: Check trigger
         id: CHECKER
         run: |
+          echo "EVENT ..."
+          echo $PR_EVENT
           echo "Checking trigger ..."
           FLAG="NO"
           if ! grep -Fq "/$PR_USER/$PR_BODY" "$PR_LIST" ; then
@@ -51,6 +53,7 @@ jobs:
           fi
           echo "run_processing=$FLAG" >> $GITHUB_OUTPUT
         env:
+          PR_EVENT: ${{ github.event }}
           PR_USER: ${{ github.event.comment.user.login }}
           PR_BODY: ${{ github.event.comment.body }}
           PR_LIST: .github/workflows/internal_test_list
