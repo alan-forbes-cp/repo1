@@ -13,12 +13,12 @@ General advice on [action security hardening](https://blog.gitguardian.com/githu
 - Don't include structured data in secrets.
 - Review secrets' workflow run usage and logging output for correct redaction.
 - Audit secrets periodically to ensure content is still required.
-- ***Status of comment trigger action & Template-Repo:*** Trigger action workflow and logging has been reviewed under various run conditions. Auditing TBD.
+- ***Status of comment trigger action & Template-Repo:*** Not used
 
 ## GITHUB_TOKEN:
 
 - Explicitly limit GITHUB_TOKEN permissions and scope this usage minimally.
-- ***Status of comment trigger action & Template-Repo:*** Trigger action usage is set to allow pull request reads/writes only as required. Best practice recommendation for Template-Repo is to always explicitly set the permissions on a per-action basis.
+- ***Status of comment trigger action & Template-Repo:*** Trigger action usage is set to allow pull request reads/writes only as required. Similarly, best practice recommendation for Template-Repo is to always explicitly set the permissions on a per-action basis.
 
 ## Injection protection:
 
