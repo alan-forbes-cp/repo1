@@ -1,5 +1,5 @@
 name: PR internal-test-request comment trigger
-run-name: PR internal-test-request ("${{ github.event.issue.title }}", @${{ github.event.comment.user.login }}, ${{ github.event.comment.created_at }})
+run-name: PR internal-test-request ("${{ github.event.issue.title }}", ${{ github.event.comment.created_at }}, @${{ github.event.comment.user.login }})
 
 on:
   issue_comment:
@@ -14,7 +14,7 @@ jobs:
     # * new comments (See 'issue_comment:types:' above)
     # * PR comments (Issue comments are skipped - also see 'issue_comment:' above)
     # * comments with '/trigger_string' format
-    # * comments from specific user(s)
+    # * comments from specific user(s), together with ...
     # * comments with a specific trigger string (i.e. comment-body content e.g. "/verify")
     # * open PRs
     # Requires:
@@ -37,8 +37,6 @@ jobs:
       - name: Check trigger
         id: CHECKER
         run: |
-          echo "BASE REF"
-          gh pr view $PR_NUMBER --repo $GH_REPO --json baseRefName | jq -r '.baseRefName'
           echo "Checking trigger ..."
           FLAG="NO"
           if ! grep -Fq "/$PR_USER/$PR_BODY" "$PR_LIST" ; then
