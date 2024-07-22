@@ -1,4 +1,5 @@
 name: PR internal-test-request comment trigger
+run-name: THIS RUN NAME
 
 on:
   issue_comment:
@@ -36,10 +37,6 @@ jobs:
       - name: Check trigger
         id: CHECKER
         run: |
-          echo "GH ..."
-          gh pr view $PR_NUMBER --repo $GH_REPO
-          echo "HEAD REF"
-          gh pr view $PR_NUMBER --repo $GH_REPO --json headRefName | jq -r '.headRefName'
           echo "BASE REF"
           gh pr view $PR_NUMBER --repo $GH_REPO --json baseRefName | jq -r '.baseRefName'
           echo "Checking trigger ..."
