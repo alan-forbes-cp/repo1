@@ -1,5 +1,5 @@
 name: PR internal-test-request comment trigger
-run-name: PR internal-test-request comment trigger (@${{ github.event.comment.user.login }})
+run-name: PR internal-test-request comment trigger (${{ github.event.issue.title }} @${{ github.event.comment.user.login }})
 
 on:
   issue_comment:
