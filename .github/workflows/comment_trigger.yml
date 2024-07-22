@@ -38,6 +38,8 @@ jobs:
         run: |
           echo "GH ..."
           gh pr view $PR_NUMBER --repo $GH_REPO
+          echo "EVENT_PATH ..."
+          more $GITHUB_EVENT_PATH
           echo "Checking trigger ..."
           FLAG="NO"
           if ! grep -Fq "/$PR_USER/$PR_BODY" "$PR_LIST" ; then
