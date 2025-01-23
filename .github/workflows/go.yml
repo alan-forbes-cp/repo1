@@ -6,9 +6,9 @@ jobs:
     runs-on: ubuntu-22.04
     steps:
     - run: which ccache || echo no ccache
-    - run: which ccache -V || echo no version
+    - run: ccache -V || echo no version
   gojob2:
     runs-on: ubuntu-24.04
     steps:
     - run: which ccache || echo no ccache
-    - run: which ccache -V || echo no version
+    - run: ccache -V || echo no version
