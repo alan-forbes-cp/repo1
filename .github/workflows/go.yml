@@ -5,5 +5,4 @@ jobs:
   gojob:
     runs-on: ubuntu-22.04
     steps:
-    - name: setup-ubuntu
     - run: which ccache && ccache -V
