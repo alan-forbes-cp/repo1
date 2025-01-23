@@ -12,3 +12,26 @@ jobs:
     steps:
     - run: which ccache || echo no ccache
     - run: ccache -V || echo no version
+  gojob3:
+    runs-on: cp-ubuntu-24.04
+    steps:
+    - run: which ccache || echo no ccache
+    - run: ccache -V || echo no version
+  gojob4:
+    runs-on: ubuntu-24.04
+    container:
+      image: 'ghcr.io/alan-forbes-cp/ock_ubuntu_22.04:latest'
+      volumes:
+        - ${{github.workspace}}:${{github.workspace}}
+    steps:
+    - run: which ccache || echo no ccache
+    - run: ccache -V || echo no version
+  gojob5:
+    runs-on: ubuntu-24.04
+    container:
+      image: 'ghcr.io/alan-forbes-cp/ock_ubuntu_24.04:latest'
+      volumes:
+        - ${{github.workspace}}:${{github.workspace}}
+    steps:
+    - run: which ccache || echo no ccache
+    - run: ccache -V || echo no version
