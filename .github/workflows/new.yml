@@ -1,0 +1,8 @@
+name: newflow
+on:
+  workflow_dispatch:
+jobs:
+  newflow:
+    runs-on: ubuntu-22.04
+    steps:
+    - run: echo hello from newflow
